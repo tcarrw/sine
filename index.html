@@ -3,360 +3,381 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Illumina Sine Ritual — Single File</title>
+<title>sine.plnt.earth — Buzz Card</title>
+<meta name="description" content="A gentle daily sine-tone practice card with timer, notes, and local-only logging.">
 <meta name="theme-color" content="#0B0F19">
-<meta name="description" content="Bee hum, Moon pulse, Sun flares — generate and download an Illumina sine ritual.">
 <style>
-  :root{--bg:#0B0F19;--ink:#E6EAF2;--muted:#94A3B8;--line:rgba(255,255,255,.12);--card:#0F1524;--accent:#A4E8FF}
+  :root{
+    --bg:#0B0F19;--ink:#E6EAF2;--muted:#9AA6B2;--line:rgba(230,234,242,.12);
+    --card:#0F1524;--hi:#A4E8FF;--ok:#34D399;--warn:#FBBF24;--bad:#F87171;
+    --focus:0 0 0 3px rgba(164,232,255,.35);
+    --gap:14px; --radius:14px; --shadow:0 8px 30px rgba(0,0,0,.25);
+    --maxw:880px; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-  .wrap{max-width:960px;margin:0 auto;padding:24px}
-  h1{font-size:20px;margin:0 0 8px}
-  p{color:var(--muted);margin:0 0 16px}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:720px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-  label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-  input,select{width:100%;background:#0b0f19;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-  button{appearance:none;border:1px solid var(--line);background:#12182a;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer}
-  button.primary{background:var(--accent);color:#001019;border:0}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,"Courier New",monospace;font-size:12px;color:var(--muted)}
-  canvas{width:100%;height:160px;background:#0a0f1d;border-radius:12px;border:1px solid var(--line)}
-  .inline{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .spacer{flex:1}
-  .badge{font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-  .hint{font-size:12px;color:var(--muted)}
-  a.dl{color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent)}
+  body{margin:0;background:linear-gradient(180deg,#0B0F19 0%, #0B0F19 60%, #0c1224 100%);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+  header{max-width:var(--maxw);margin:28px auto 12px;padding:0 16px}
+  header h1{margin:0 0 6px;font-size:22px;letter-spacing:.3px}
+  header p{margin:0;color:var(--muted);font-size:14px}
+  .wrap{max-width:var(--maxw);margin:0 auto 48px;padding:0 16px;display:grid;gap:var(--gap)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .pad{padding:18px}
+  .grid{display:grid;gap:var(--gap)}
+  .row{display:grid;gap:10px}
+  @media (min-width:780px){
+    .row.two{grid-template-columns:1fr 1fr}
+    .row.three{grid-template-columns:1fr 1fr 1fr}
+  }
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  input[type="text"],input[type="number"],input[type="date"],select,textarea{
+    width:100%;background:#0B1120;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 12px;font-size:14px;outline:none
+  }
+  textarea{min-height:84px;resize:vertical}
+  input[type="range"]{width:100%}
+  input:focus,select:focus,textarea:focus{box-shadow:var(--focus);border-color:#3a4a6a}
+  .hint{color:var(--muted);font-size:12px}
+  .inline{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}
+  .btn{
+    appearance:none;border:1px solid var(--line);background:#0B1120;color:var(--ink);padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer
+  }
+  .btn:hover{border-color:#2a3148}
+  .btn.primary{background:linear-gradient(180deg,#122043,#0e1a36);border-color:#1c294a}
+  .btn.good{background:linear-gradient(180deg,#0f2d28,#0b231f);border-color:#1e3b34}
+  .btn.warn{background:linear-gradient(180deg,#3a2a09,#2d2007);border-color:#5f450d}
+  .btn.danger{background:linear-gradient(180deg,#3b1717,#2b1111);border-color:#5f1f1f}
+  .hr{height:1px;background:var(--line);margin:14px 0}
+  .title{font-size:16px;font-weight:700;margin:0 0 10px}
+  .small{font-size:12px;color:var(--muted)}
+  .list{display:grid;gap:10px}
+  .entry{border:1px dashed var(--line);border-radius:12px;padding:12px}
+  .right{margin-left:auto}
+  .center{text-align:center}
+  .breath{height:64px;display:flex;align-items:center;justify-content:center}
+  .dot{width:14px;height:14px;border-radius:50%;background:var(--hi);opacity:.6;animation:breath 6s ease-in-out infinite}
+  @keyframes breath{0%{transform:scale(.8);opacity:.4}50%{transform:scale(1.2);opacity:.9}100%{transform:scale(.8);opacity:.4}}
+  .warnbox{background:#2b1f08;border:1px solid rgba(251,191,36,.35);color:#FDE68A;border-radius:10px;padding:10px;font-size:13px}
+  .foot{color:var(--muted);font-size:12px;text-align:center;padding:18px}
+  /* Print-friendly */
+  @media print{
+    .btn,.breath,.hr,.warnbox,.foot{display:none !important}
+    body{background:#fff;color:#000}
+    .card{border:1px solid #ccc;box-shadow:none}
+    input,select,textarea{border:1px solid #999}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Illumina Sine Ritual</h1>
-  <p>Bee hum (steady), Moon pulse (slow), Sun flares (bursts). Play it live, tune the parameters, and export a WAV.</p>
+<header>
+  <h1>🌊 Buzz Card — Day 1</h1>
+  <p>Gentle daily sine-tone practice with timer & notes. Your entries are stored <em>locally</em> in your browser.</p>
+</header>
 
-  <div class="card" style="margin-bottom:12px">
-    <div class="inline" style="gap:8px">
-      <span class="badge">Preset</span>
-      <select id="preset">
-        <option value="custom">Custom</option>
-        <option value="demo1">1 minute demo</option>
-        <option value="ill42">42 minutes (symbolic)</option>
-      </select>
-      <div class="spacer"></div>
-      <span class="hint">Tip: start with the 1-minute demo, then render the 42-minute WAV.</span>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <label for="duration">Duration (seconds)</label>
-      <input id="duration" type="number" min="1" step="1" value="60">
-      <div class="row" style="margin-top:12px">
-        <div>
-          <label for="bee">Bee frequency (Hz)</label>
-          <input id="bee" type="number" step="1" value="220">
-        </div>
-        <div>
-          <label for="beeGain">Bee level (0–1)</label>
-          <input id="beeGain" type="number" min="0" max="1" step="0.05" value="0.3">
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <div>
-          <label for="moon">Moon base frequency (Hz)</label>
-          <input id="moon" type="number" step="1" value="55">
-        </div>
-        <div>
-          <label for="moonGain">Moon level (0–1)</label>
-          <input id="moonGain" type="number" min="0" max="1" step="0.05" value="0.2">
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <div>
-          <label for="moonMod">Moon pulse speed (Hz)</label>
-          <input id="moonMod" type="number" step="0.05" value="0.2">
-        </div>
-        <div>
-          <label for="sun">Sun flare frequency (Hz)</label>
-          <input id="sun" type="number" step="1" value="880">
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <div>
-          <label for="flareInt">Flare interval (sec)</label>
-          <input id="flareInt" type="number" step="0.1" value="10">
-        </div>
-        <div>
-          <label for="flareLen">Flare length (sec)</label>
-          <input id="flareLen" type="number" step="0.1" value="1">
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <div>
-          <label for="sunGain">Sun level (0–1)</label>
-          <input id="sunGain" type="number" min="0" max="1" step="0.05" value="0.4">
-        </div>
-        <div>
-          <label for="master">Master level (0–1)</label>
-          <input id="master" type="number" min="0" max="1" step="0.05" value="1">
-        </div>
-      </div>
-      <div class="controls" style="margin-top:14px">
-        <button id="play" class="primary">Play Live</button>
-        <button id="stop">Stop</button>
-        <button id="render">Render & Download WAV</button>
-      </div>
-      <div class="mono" id="status" style="margin-top:10px">idle</div>
+<main class="wrap">
+  <section class="card pad grid">
+    <div class="warnbox">
+      Keep volume modest. Start with <strong>100–200&nbsp;Hz</strong> for 3–5 minutes. If anything feels uncomfortable, <strong>stop</strong>.
     </div>
 
-    <div class="card" style="grid-column: span 2;">
-      <label>Live Visualizer</label>
-      <canvas id="scope" width="900" height="160" aria-label="waveform"></canvas>
-      <div class="row" style="margin-top:12px">
+    <div class="breath"><div class="dot" aria-hidden="true"></div></div>
+
+    <div class="row two">
+      <div>
+        <label for="date">Date</label>
+        <input id="date" type="date" aria-label="Date">
+      </div>
+      <div>
+        <label for="cycle">Cycle / Illumina #</label>
+        <input id="cycle" type="text" placeholder="e.g., Illumina 1">
+      </div>
+    </div>
+
+    <div class="card pad grid" style="background:#0b1120">
+      <div class="title">🎛 Tone Settings</div>
+      <div class="row three">
         <div>
-          <label for="sr">Sample rate</label>
-          <input id="sr" type="number" step="1" value="44100">
+          <label for="freq">Frequency (Hz)</label>
+          <input id="freq" type="number" min="20" max="1200" step="1" value="150">
+          <div class="hint">Tip: start 100–200 Hz; explore later.</div>
         </div>
         <div>
-          <label for="viz">Visualizer mode</label>
-          <select id="viz">
-            <option value="wave">Waveform</option>
-            <option value="fft">Spectrum</option>
+          <label for="dur">Duration (minutes)</label>
+          <input id="dur" type="number" min="1" max="30" step="1" value="5">
+        </div>
+        <div>
+          <label for="volume">Volume</label>
+          <select id="volume">
+            <option value="0.08">Low</option>
+            <option value="0.14" selected>Medium</option>
+            <option value="0.2">Medium-High</option>
           </select>
+          <div class="hint">Hard limit set to protect ears.</div>
         </div>
       </div>
-      <div class="inline" style="margin-top:10px">
-        <span class="hint">Rendered files are normalized and written as 16-bit PCM WAV.</span>
-        <div class="spacer"></div>
-        <a id="download" class="dl" href="#" download style="display:none">Download ready</a>
+
+      <div class="row two">
+        <div>
+          <label>Output</label>
+          <div class="inline">
+            <label class="badge"><input type="radio" name="out" value="Headphones" checked> Headphones</label>
+            <label class="badge"><input type="radio" name="out" value="Speakers"> Speakers</label>
+          </div>
+        </div>
+        <div class="inline" style="justify-content:flex-end;gap:8px">
+          <button id="testBtn" class="btn">Test 2s</button>
+          <button id="startBtn" class="btn primary">Start</button>
+          <button id="stopBtn" class="btn danger" disabled>Stop</button>
+        </div>
+      </div>
+
+      <div class="inline" aria-live="polite" style="justify-content:space-between">
+        <div class="badge">Status: <span id="status">idle</span></div>
+        <div class="badge">Time left: <span id="timeLeft">00:00</span></div>
       </div>
     </div>
-  </div>
-</div>
+
+    <div class="row">
+      <div>
+        <label for="intent">🌑 Intention (before)</label>
+        <textarea id="intent" placeholder="One line — e.g., grounding before work"></textarea>
+      </div>
+      <div class="row three">
+        <div>
+          <label for="body">Body feel (during)</label>
+          <input id="body" type="text" placeholder="e.g., warm chest, steady breath">
+        </div>
+        <div>
+          <label for="mind">Mind feel (during)</label>
+          <input id="mind" type="text" placeholder="e.g., calm, focused, drifty">
+        </div>
+        <div>
+          <label for="emotion">Emotional color (during)</label>
+          <input id="emotion" type="text" placeholder="e.g., violet, gold, clear">
+        </div>
+      </div>
+      <div>
+        <label for="reflect">🌕 Reflection (after)</label>
+        <textarea id="reflect" placeholder="One short win — e.g., calmer, good focus"></textarea>
+      </div>
+      <div>
+        <label for="archive">🐝 Archive (Illumina note)</label>
+        <textarea id="archive" placeholder="Optional: how this threads into your Illumina log"></textarea>
+      </div>
+    </div>
+
+    <div class="inline" style="justify-content:space-between">
+      <div class="inline" style="gap:8px;flex-wrap:wrap">
+        <button id="saveBtn" class="btn good">Save Entry</button>
+        <button id="newBtn" class="btn">New / Clear</button>
+      </div>
+      <div class="inline" style="gap:8px;flex-wrap:wrap">
+        <button id="exportBtn" class="btn">Export JSON</button>
+        <button id="printBtn" class="btn warn">Print / PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card pad grid">
+    <div class="title">📜 Your Entries (local)</div>
+    <div class="small">Saved to your browser only. Click an entry to load it.</div>
+    <div id="entries" class="list"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  sine.plnt.earth — single-file, local-first. No trackers. Be gentle.
+</footer>
 
 <script>
 (function(){
-  let ctx, master, playing = false, analyser, rafId, nodes = {};
-  const E = id => document.getElementById(id);
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const $ = id => document.getElementById(id);
+  const date = $('date'), cycle = $('cycle'), freq = $('freq'), dur = $('dur'), volume = $('volume');
+  const intent = $('intent'), body = $('body'), mind = $('mind'), emotion = $('emotion'), reflect = $('reflect'), archive = $('archive');
+  const statusEl = $('status'), timeLeft = $('timeLeft'), entriesEl = $('entries');
+  const startBtn = $('startBtn'), stopBtn = $('stopBtn'), testBtn = $('testBtn');
+  const saveBtn = $('saveBtn'), newBtn = $('newBtn'), exportBtn = $('exportBtn'), printBtn = $('printBtn');
 
-  function getParams(){
-    return {
-      duration: +E('duration').value || 60,
-      beeFreq: +E('bee').value || 220,
-      beeGain: clamp(+E('beeGain').value,0,1),
-      moonFreq: +E('moon').value || 55,
-      moonGain: clamp(+E('moonGain').value,0,1),
-      moonMod: +E('moonMod').value || 0.2,
-      sunFreq: +E('sun').value || 880,
-      sunGain: clamp(+E('sunGain').value,0,1),
-      flareInt: Math.max(0.1, +E('flareInt').value || 10),
-      flareLen: Math.max(0.05, +E('flareLen').value || 1),
-      master: clamp(+E('master').value,0,1),
-      sr: Math.max(8000, +E('sr').value || 44100)
+  // Default date = today (local)
+  const today = new Date(); date.value = new Date(today.getTime() - today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+
+  // Web Audio setup
+  let ctx, osc, gain, timer, endTime = 0, running = false;
+
+  function ensureAudio(){
+    if(!ctx){
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      gain = ctx.createGain();
+      gain.gain.value = Number(volume.value); // clamped by select
+      gain.connect(ctx.destination);
+    }
+  }
+
+  function startTone(seconds){
+    ensureAudio();
+    if(running) return;
+    const hz = clamp(Number(freq.value)||150, 20, 1200);
+    const vol = clamp(Number(volume.value)||0.14, 0, 0.2);
+    gain.gain.setTargetAtTime(vol, ctx.currentTime, 0.01);
+    osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setTargetAtTime(hz, ctx.currentTime, 0.01);
+    osc.connect(gain);
+    osc.start();
+    running = true;
+    statusEl.textContent = 'playing';
+    stopBtn.disabled = false; startBtn.disabled = true; testBtn.disabled = true;
+    const now = performance.now();
+    endTime = now + (seconds*1000);
+    updateCountdown();
+  }
+
+  function stopTone(){
+    if(!running) return;
+    try{ osc.stop(); }catch(e){}
+    try{ osc.disconnect(); }catch(e){}
+    running = false;
+    statusEl.textContent = 'idle';
+    stopBtn.disabled = true; startBtn.disabled = false; testBtn.disabled = false;
+    timeLeft.textContent = '00:00';
+    if(timer){ cancelAnimationFrame(timer); timer = null; }
+  }
+
+  function updateCountdown(){
+    if(!running){ return; }
+    const now = performance.now();
+    const ms = Math.max(0, endTime - now);
+    const sec = Math.ceil(ms/1000);
+    const mm = String(Math.floor(sec/60)).padStart(2,'0');
+    const ss = String(sec%60).padStart(2,'0');
+    timeLeft.textContent = mm+':'+ss;
+    if(ms <= 0){ stopTone(); return; }
+    timer = requestAnimationFrame(updateCountdown);
+  }
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function getOutput(){
+    const nodes = document.querySelectorAll('input[name="out"]');
+    for(const n of nodes){ if(n.checked) return n.value; }
+    return 'Headphones';
+  }
+
+  function clearForm(){
+    // keep date/cycle
+    freq.value = 150; dur.value = 5; volume.value = '0.14';
+    intent.value = ''; body.value=''; mind.value=''; emotion.value=''; reflect.value=''; archive.value='';
+    const outs = document.querySelectorAll('input[name="out"]'); outs[0].checked = true;
+  }
+
+  function saveEntry(){
+    const data = {
+      date: date.value,
+      cycle: cycle.value.trim(),
+      freq: clamp(Number(freq.value)||150, 20, 1200),
+      dur: clamp(Number(dur.value)||5, 1, 60),
+      volume: Number(volume.value),
+      output: getOutput(),
+      intent: intent.value.trim(),
+      body: body.value.trim(),
+      mind: mind.value.trim(),
+      emotion: emotion.value.trim(),
+      reflect: reflect.value.trim(),
+      archive: archive.value.trim(),
+      savedAt: new Date().toISOString()
     };
+    const all = loadAll();
+    all.unshift(data);
+    localStorage.setItem('sineBuzzEntries', JSON.stringify(all));
+    renderEntries(all);
   }
 
-  function buildGraph(audioCtx, p, destination, forOffline){
-    const out = {};
-    const main = audioCtx.createGain(); main.gain.value = p.master;
+  function loadAll(){
+    try{
+      const raw = localStorage.getItem('sineBuzzEntries');
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
 
-    const beeOsc = audioCtx.createOscillator(); beeOsc.type = 'sine'; beeOsc.frequency.value = p.beeFreq;
-    const beeG = audioCtx.createGain(); beeG.gain.value = p.beeGain; beeOsc.connect(beeG).connect(main);
-
-    const moonOsc = audioCtx.createOscillator(); moonOsc.type = 'sine'; moonOsc.frequency.value = p.moonFreq;
-    const moonG = audioCtx.createGain(); moonG.gain.value = 0;
-    const moonLevel = audioCtx.createGain(); moonLevel.gain.value = p.moonGain;
-    moonOsc.connect(moonG).connect(moonLevel).connect(main);
-
-    const modOsc = audioCtx.createOscillator(); modOsc.type = 'sine'; modOsc.frequency.value = p.moonMod;
-    const modScale = audioCtx.createGain(); modScale.gain.value = 0.5;
-    const modBias = audioCtx.createConstantSource(); modBias.offset.value = 0.5;
-    modOsc.connect(modScale).connect(moonG.gain);
-    modBias.connect(moonG.gain);
-
-    const sunOsc = audioCtx.createOscillator(); sunOsc.type = 'sine'; sunOsc.frequency.value = p.sunFreq;
-    const sunG = audioCtx.createGain(); sunG.gain.value = 0; sunOsc.connect(sunG).connect(main);
-
-    const t0 = audioCtx.currentTime;
-    if (forOffline){
-      const T = p.duration;
-      const bursts = Math.ceil(T / p.flareInt);
-      for(let k=0;k<bursts;k++){
-        const s = t0 + k*p.flareInt;
-        const e = Math.min(s + p.flareLen, t0 + T);
-        sunG.gain.setValueAtTime(0, s);
-        sunG.gain.linearRampToValueAtTime(p.sunGain, s + 0.01);
-        sunG.gain.setValueAtTime(p.sunGain, e - 0.02);
-        sunG.gain.linearRampToValueAtTime(0, e);
-      }
-    } else {
-      function scheduleLive(){
-        const now = audioCtx.currentTime;
-        sunG.gain.cancelScheduledValues(now);
-        for(let k=0;k<60;k++){
-          const s = now + k*p.flareInt;
-          const e = s + p.flareLen;
-          sunG.gain.setValueAtTime(0, s);
-          sunG.gain.linearRampToValueAtTime(p.sunGain, s + 0.01);
-          sunG.gain.setValueAtTime(p.sunGain, e - 0.02);
-          sunG.gain.linearRampToValueAtTime(0, e);
-        }
-      }
-      scheduleLive();
+  function renderEntries(list){
+    entriesEl.innerHTML = '';
+    if(!list.length){
+      const d = document.createElement('div');
+      d.className = 'small';
+      d.textContent = 'No entries yet.';
+      entriesEl.appendChild(d);
+      return;
     }
-
-    beeOsc.start(); moonOsc.start(); modOsc.start(); modBias.start(); sunOsc.start();
-    main.connect(destination);
-
-    out.stop = function(at){
-      const when = at || audioCtx.currentTime;
-      [beeOsc,moonOsc,modOsc,sunOsc,modBias].forEach(o=>{try{o.stop(when);}catch(_){ }});
-      try{main.disconnect();}catch(_){}
-    };
-    out.master = main;
-    return out;
+    list.forEach((item, idx)=>{
+      const div = document.createElement('button');
+      div.type = 'button';
+      div.className = 'entry';
+      div.style.textAlign = 'left';
+      div.innerHTML = `
+        <div class="inline" style="justify-content:space-between;align-items:center">
+          <strong>${item.date || '—'} • ${item.freq} Hz • ${item.dur} min</strong>
+          <span class="badge">${item.output}</span>
+        </div>
+        <div class="small">${escapeHtml(item.intent || 'No intention')} — <em>${escapeHtml(item.reflect || 'No reflection')}</em></div>
+      `;
+      div.addEventListener('click', ()=> loadIntoForm(item));
+      entriesEl.appendChild(div);
+    });
   }
 
-  function draw(){
-    if (!analyser) return;
-    const canvas = E('scope'); const g = canvas.getContext('2d');
-    const mode = E('viz').value;
-    const w = canvas.width, h = canvas.height;
-    g.clearRect(0,0,w,h);
-    g.fillStyle = '#0a0f1d'; g.fillRect(0,0,w,h);
-
-    if (mode === 'wave'){
-      const buf = new Uint8Array(analyser.fftSize);
-      analyser.getByteTimeDomainData(buf);
-      g.lineWidth = 2; g.strokeStyle = '#A4E8FF';
-      g.beginPath();
-      for(let i=0;i<buf.length;i++){
-        const x = i / (buf.length-1) * w;
-        const y = (buf[i]/255)*h;
-        if(i===0) g.moveTo(x,y); else g.lineTo(x,y);
-      }
-      g.stroke();
-    } else {
-      const bins = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(bins);
-      const barW = Math.max(1, w / bins.length);
-      for(let i=0;i<bins.length;i++){
-        const v = bins[i]/255;
-        const bh = v*h;
-        g.fillStyle = '#A4E8FF';
-        g.fillRect(i*barW, h-bh, barW, bh);
-      }
-    }
-    rafId = requestAnimationFrame(draw);
+  function loadIntoForm(item){
+    date.value = item.date || date.value;
+    cycle.value = item.cycle || '';
+    freq.value = item.freq || 150;
+    dur.value = item.dur || 5;
+    volume.value = String(item.volume ?? 0.14);
+    const outs = document.querySelectorAll('input[name="out"]');
+    for(const n of outs){ n.checked = (n.value === (item.output || 'Headphones')); }
+    intent.value = item.intent || '';
+    body.value = item.body || '';
+    mind.value = item.mind || '';
+    emotion.value = item.emotion || '';
+    reflect.value = item.reflect || '';
+    archive.value = item.archive || '';
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  async function play(){
-    if (playing) return;
-    const p = getParams();
-    ctx = new (window.AudioContext||window.webkitAudioContext)({sampleRate:p.sr});
-    master = ctx.createGain(); master.gain.value = p.master;
-
-    analyser = ctx.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0.85;
-    master.connect(analyser).connect(ctx.destination);
-
-    nodes = buildGraph(ctx, p, master, false);
-    playing = true;
-    E('status').textContent = 'playing live…';
-    draw();
-
-    setTimeout(()=>{ if (playing){ E('status').textContent = 'playing live (timer reached)'; } }, p.duration*1000);
-  }
-
-  function stop(){
-    if (!playing) return;
-    playing = false;
-    if (rafId) cancelAnimationFrame(rafId);
-    try{ nodes.stop(); }catch(_){}
-    try{ ctx.close(); }catch(_){}
-    nodes = {}; ctx = null; analyser = null;
-    E('status').textContent = 'stopped';
-  }
-
-  function encodeWav(floatBuf, sampleRate){
-    let len = floatBuf.length;
-    const pcm = new Int16Array(len);
-    for (let i=0;i<len;i++){
-      let s = Math.max(-1, Math.min(1, floatBuf[i]));
-      pcm[i] = (s<0 ? s*0x8000 : s*0x7FFF);
-    }
-    const bytesPerSample = 2;
-    const blockAlign = bytesPerSample * 1;
-    const buffer = new ArrayBuffer(44 + pcm.byteLength);
-    const view = new DataView(buffer);
-
-    function wstr(o, s){ for(let i=0;i<s.length;i++) view.setUint8(o+i, s.charCodeAt(i)); }
-    let o=0;
-    wstr(o,"RIFF"); o+=4;
-    view.setUint32(o, 36 + pcm.byteLength, true); o+=4;
-    wstr(o,"WAVE"); o+=4;
-    wstr(o,"fmt "); o+=4;
-    view.setUint32(o,16,true); o+=4;
-    view.setUint16(o,1,true); o+=2;
-    view.setUint16(o,1,true); o+=2;
-    view.setUint32(o,sampleRate,true); o+=4;
-    view.setUint32(o,sampleRate*blockAlign,true); o+=4;
-    view.setUint16(o,blockAlign,true); o+=2;
-    view.setUint16(o,16,true); o+=2;
-    wstr(o,"data"); o+=4;
-    view.setUint32(o, pcm.byteLength, true); o+=4;
-
-    new Uint8Array(buffer,44).set(new Uint8Array(pcm.buffer));
-    return new Blob([buffer], {type:"audio/wav"});
-  }
-
-  async function render(){
-    const p = getParams();
-    const length = Math.floor(p.duration * p.sr);
-    const off = new OfflineAudioContext(1, length, p.sr);
-    const master = off.createGain(); master.connect(off.destination);
-    buildGraph(off, p, master, true);
-    const rendered = await off.startRendering();
-    const chan = rendered.getChannelData(0);
-    let peak = 0; for (let i=0;i<chan.length;i++){ const v = Math.abs(chan[i]); if (v>peak) peak=v; }
-    const norm = peak > 0 ? 1/peak : 1;
-    const normalized = new Float32Array(chan.length);
-    for(let i=0;i<chan.length;i++){ normalized[i] = chan[i]*norm; }
-    const blob = encodeWav(normalized, p.sr);
+  function exportJSON(){
+    const data = JSON.stringify(loadAll(), null, 2);
+    const blob = new Blob([data], {type:'application/json'});
     const url = URL.createObjectURL(blob);
-    const a = E('download');
-    a.href = url;
-    a.download = `illumina_sine_ritual_${p.duration}s_${p.sr}hz.wav`;
-    a.style.display = 'inline';
-    E('status').textContent = 'rendered — ready to download';
+    const a = document.createElement('a');
+    a.href = url; a.download = 'sineBuzzEntries.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
   }
 
-  E('play').addEventListener('click', play);
-  E('stop').addEventListener('click', stop);
-  E('render').addEventListener('click', render);
-  E('viz').addEventListener('change', ()=>{ if (playing){ cancelAnimationFrame(rafId); draw(); }});
-  E('preset').addEventListener('change', e=>{
-    const v = e.target.value;
-    if (v==='demo1'){
-      E('duration').value = 60;
-      E('bee').value = 220; E('beeGain').value = 0.3;
-      E('moon').value = 55; E('moonGain').value = 0.2; E('moonMod').value = 0.2;
-      E('sun').value = 880; E('sunGain').value = 0.4; E('flareInt').value = 10; E('flareLen').value = 1;
-      E('master').value = 1; E('sr').value = 44100;
-    } else if (v==='ill42'){
-      E('duration').value = 42*60;
-      E('bee').value = 220; E('beeGain').value = 0.3;
-      E('moon').value = 55; E('moonGain').value = 0.2; E('moonMod').value = 0.2;
-      E('sun').value = 880; E('sunGain').value = 0.4; E('flareInt').value = 10; E('flareLen').value = 1;
-      E('master').value = 1; E('sr').value = 44100;
-    }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+  }
+
+  // Event wiring
+  startBtn.addEventListener('click', ()=>{
+    const minutes = clamp(Number(dur.value)||5, 1, 60);
+    startTone(minutes*60);
+  });
+  stopBtn.addEventListener('click', stopTone);
+  testBtn.addEventListener('click', ()=> startTone(2));
+  saveBtn.addEventListener('click', saveEntry);
+  newBtn.addEventListener('click', clearForm);
+  exportBtn.addEventListener('click', exportJSON);
+  printBtn.addEventListener('click', ()=> window.print());
+  volume.addEventListener('change', ()=>{
+    if(gain) gain.gain.setTargetAtTime(Number(volume.value), ctx.currentTime, 0.01);
   });
 
-  document.addEventListener('visibilitychange', ()=>{ if (document.hidden) { /* pause viz only */ if (rafId) cancelAnimationFrame(rafId); } else if (playing){ draw(); } });
+  // Render existing
+  renderEntries(loadAll());
+
+  // Safety: stop tone if page hidden/unload
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) stopTone(); });
+  window.addEventListener('pagehide', stopTone);
 })();
 </script>
 </body>
