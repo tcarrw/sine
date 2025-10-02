@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Illumina Sine Ritual — Single File</title>
+<meta name="theme-color" content="#0B0F19">
+<meta name="description" content="Bee hum, Moon pulse, Sun flares — generate and download an Illumina sine ritual.">
+<style>
+  :root{--bg:#0B0F19;--ink:#E6EAF2;--muted:#94A3B8;--line:rgba(255,255,255,.12);--card:#0F1524;--accent:#A4E8FF}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+  .wrap{max-width:960px;margin:0 auto;padding:24px}
+  h1{font-size:20px;margin:0 0 8px}
+  p{color:var(--muted);margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:720px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+  input,select{width:100%;background:#0b0f19;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  button{appearance:none;border:1px solid var(--line);background:#12182a;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer}
+  button.primary{background:var(--accent);color:#001019;border:0}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,"Courier New",monospace;font-size:12px;color:var(--muted)}
+  canvas{width:100%;height:160px;background:#0a0f1d;border-radius:12px;border:1px solid var(--line)}
+  .inline{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .spacer{flex:1}
+  .badge{font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+  .hint{font-size:12px;color:var(--muted)}
+  a.dl{color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Illumina Sine Ritual</h1>
+  <p>Bee hum (steady), Moon pulse (slow), Sun flares (bursts). Play it live, tune the parameters, and export a WAV.</p>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="inline" style="gap:8px">
+      <span class="badge">Preset</span>
+      <select id="preset">
+        <option value="custom">Custom</option>
+        <option value="demo1">1 minute demo</option>
+        <option value="ill42">42 minutes (symbolic)</option>
+      </select>
+      <div class="spacer"></div>
+      <span class="hint">Tip: start with the 1-minute demo, then render the 42-minute WAV.</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <label for="duration">Duration (seconds)</label>
+      <input id="duration" type="number" min="1" step="1" value="60">
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="bee">Bee frequency (Hz)</label>
+          <input id="bee" type="number" step="1" value="220">
+        </div>
+        <div>
+          <label for="beeGain">Bee level (0–1)</label>
+          <input id="beeGain" type="number" min="0" max="1" step="0.05" value="0.3">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="moon">Moon base frequency (Hz)</label>
+          <input id="moon" type="number" step="1" value="55">
+        </div>
+        <div>
+          <label for="moonGain">Moon level (0–1)</label>
+          <input id="moonGain" type="number" min="0" max="1" step="0.05" value="0.2">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="moonMod">Moon pulse speed (Hz)</label>
+          <input id="moonMod" type="number" step="0.05" value="0.2">
+        </div>
+        <div>
+          <label for="sun">Sun flare frequency (Hz)</label>
+          <input id="sun" type="number" step="1" value="880">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="flareInt">Flare interval (sec)</label>
+          <input id="flareInt" type="number" step="0.1" value="10">
+        </div>
+        <div>
+          <label for="flareLen">Flare length (sec)</label>
+          <input id="flareLen" type="number" step="0.1" value="1">
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="sunGain">Sun level (0–1)</label>
+          <input id="sunGain" type="number" min="0" max="1" step="0.05" value="0.4">
+        </div>
+        <div>
+          <label for="master">Master level (0–1)</label>
+          <input id="master" type="number" min="0" max="1" step="0.05" value="1">
+        </div>
+      </div>
+      <div class="controls" style="margin-top:14px">
+        <button id="play" class="primary">Play Live</button>
+        <button id="stop">Stop</button>
+        <button id="render">Render & Download WAV</button>
+      </div>
+      <div class="mono" id="status" style="margin-top:10px">idle</div>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <label>Live Visualizer</label>
+      <canvas id="scope" width="900" height="160" aria-label="waveform"></canvas>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label for="sr">Sample rate</label>
+          <input id="sr" type="number" step="1" value="44100">
+        </div>
+        <div>
+          <label for="viz">Visualizer mode</label>
+          <select id="viz">
+            <option value="wave">Waveform</option>
+            <option value="fft">Spectrum</option>
+          </select>
+        </div>
+      </div>
+      <div class="inline" style="margin-top:10px">
+        <span class="hint">Rendered files are normalized and written as 16-bit PCM WAV.</span>
+        <div class="spacer"></div>
+        <a id="download" class="dl" href="#" download style="display:none">Download ready</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let ctx, master, playing = false, analyser, rafId, nodes = {};
+  const E = id => document.getElementById(id);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  function getParams(){
+    return {
+      duration: +E('duration').value || 60,
+      beeFreq: +E('bee').value || 220,
+      beeGain: clamp(+E('beeGain').value,0,1),
+      moonFreq: +E('moon').value || 55,
+      moonGain: clamp(+E('moonGain').value,0,1),
+      moonMod: +E('moonMod').value || 0.2,
+      sunFreq: +E('sun').value || 880,
+      sunGain: clamp(+E('sunGain').value,0,1),
+      flareInt: Math.max(0.1, +E('flareInt').value || 10),
+      flareLen: Math.max(0.05, +E('flareLen').value || 1),
+      master: clamp(+E('master').value,0,1),
+      sr: Math.max(8000, +E('sr').value || 44100)
+    };
+  }
+
+  function buildGraph(audioCtx, p, destination, forOffline){
+    const out = {};
+    const main = audioCtx.createGain(); main.gain.value = p.master;
+
+    const beeOsc = audioCtx.createOscillator(); beeOsc.type = 'sine'; beeOsc.frequency.value = p.beeFreq;
+    const beeG = audioCtx.createGain(); beeG.gain.value = p.beeGain; beeOsc.connect(beeG).connect(main);
+
+    const moonOsc = audioCtx.createOscillator(); moonOsc.type = 'sine'; moonOsc.frequency.value = p.moonFreq;
+    const moonG = audioCtx.createGain(); moonG.gain.value = 0;
+    const moonLevel = audioCtx.createGain(); moonLevel.gain.value = p.moonGain;
+    moonOsc.connect(moonG).connect(moonLevel).connect(main);
+
+    const modOsc = audioCtx.createOscillator(); modOsc.type = 'sine'; modOsc.frequency.value = p.moonMod;
+    const modScale = audioCtx.createGain(); modScale.gain.value = 0.5;
+    const modBias = audioCtx.createConstantSource(); modBias.offset.value = 0.5;
+    modOsc.connect(modScale).connect(moonG.gain);
+    modBias.connect(moonG.gain);
+
+    const sunOsc = audioCtx.createOscillator(); sunOsc.type = 'sine'; sunOsc.frequency.value = p.sunFreq;
+    const sunG = audioCtx.createGain(); sunG.gain.value = 0; sunOsc.connect(sunG).connect(main);
+
+    const t0 = audioCtx.currentTime;
+    if (forOffline){
+      const T = p.duration;
+      const bursts = Math.ceil(T / p.flareInt);
+      for(let k=0;k<bursts;k++){
+        const s = t0 + k*p.flareInt;
+        const e = Math.min(s + p.flareLen, t0 + T);
+        sunG.gain.setValueAtTime(0, s);
+        sunG.gain.linearRampToValueAtTime(p.sunGain, s + 0.01);
+        sunG.gain.setValueAtTime(p.sunGain, e - 0.02);
+        sunG.gain.linearRampToValueAtTime(0, e);
+      }
+    } else {
+      function scheduleLive(){
+        const now = audioCtx.currentTime;
+        sunG.gain.cancelScheduledValues(now);
+        for(let k=0;k<60;k++){
+          const s = now + k*p.flareInt;
+          const e = s + p.flareLen;
+          sunG.gain.setValueAtTime(0, s);
+          sunG.gain.linearRampToValueAtTime(p.sunGain, s + 0.01);
+          sunG.gain.setValueAtTime(p.sunGain, e - 0.02);
+          sunG.gain.linearRampToValueAtTime(0, e);
+        }
+      }
+      scheduleLive();
+    }
+
+    beeOsc.start(); moonOsc.start(); modOsc.start(); modBias.start(); sunOsc.start();
+    main.connect(destination);
+
+    out.stop = function(at){
+      const when = at || audioCtx.currentTime;
+      [beeOsc,moonOsc,modOsc,sunOsc,modBias].forEach(o=>{try{o.stop(when);}catch(_){ }});
+      try{main.disconnect();}catch(_){}
+    };
+    out.master = main;
+    return out;
+  }
+
+  function draw(){
+    if (!analyser) return;
+    const canvas = E('scope'); const g = canvas.getContext('2d');
+    const mode = E('viz').value;
+    const w = canvas.width, h = canvas.height;
+    g.clearRect(0,0,w,h);
+    g.fillStyle = '#0a0f1d'; g.fillRect(0,0,w,h);
+
+    if (mode === 'wave'){
+      const buf = new Uint8Array(analyser.fftSize);
+      analyser.getByteTimeDomainData(buf);
+      g.lineWidth = 2; g.strokeStyle = '#A4E8FF';
+      g.beginPath();
+      for(let i=0;i<buf.length;i++){
+        const x = i / (buf.length-1) * w;
+        const y = (buf[i]/255)*h;
+        if(i===0) g.moveTo(x,y); else g.lineTo(x,y);
+      }
+      g.stroke();
+    } else {
+      const bins = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(bins);
+      const barW = Math.max(1, w / bins.length);
+      for(let i=0;i<bins.length;i++){
+        const v = bins[i]/255;
+        const bh = v*h;
+        g.fillStyle = '#A4E8FF';
+        g.fillRect(i*barW, h-bh, barW, bh);
+      }
+    }
+    rafId = requestAnimationFrame(draw);
+  }
+
+  async function play(){
+    if (playing) return;
+    const p = getParams();
+    ctx = new (window.AudioContext||window.webkitAudioContext)({sampleRate:p.sr});
+    master = ctx.createGain(); master.gain.value = p.master;
+
+    analyser = ctx.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0.85;
+    master.connect(analyser).connect(ctx.destination);
+
+    nodes = buildGraph(ctx, p, master, false);
+    playing = true;
+    E('status').textContent = 'playing live…';
+    draw();
+
+    setTimeout(()=>{ if (playing){ E('status').textContent = 'playing live (timer reached)'; } }, p.duration*1000);
+  }
+
+  function stop(){
+    if (!playing) return;
+    playing = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    try{ nodes.stop(); }catch(_){}
+    try{ ctx.close(); }catch(_){}
+    nodes = {}; ctx = null; analyser = null;
+    E('status').textContent = 'stopped';
+  }
+
+  function encodeWav(floatBuf, sampleRate){
+    let len = floatBuf.length;
+    const pcm = new Int16Array(len);
+    for (let i=0;i<len;i++){
+      let s = Math.max(-1, Math.min(1, floatBuf[i]));
+      pcm[i] = (s<0 ? s*0x8000 : s*0x7FFF);
+    }
+    const bytesPerSample = 2;
+    const blockAlign = bytesPerSample * 1;
+    const buffer = new ArrayBuffer(44 + pcm.byteLength);
+    const view = new DataView(buffer);
+
+    function wstr(o, s){ for(let i=0;i<s.length;i++) view.setUint8(o+i, s.charCodeAt(i)); }
+    let o=0;
+    wstr(o,"RIFF"); o+=4;
+    view.setUint32(o, 36 + pcm.byteLength, true); o+=4;
+    wstr(o,"WAVE"); o+=4;
+    wstr(o,"fmt "); o+=4;
+    view.setUint32(o,16,true); o+=4;
+    view.setUint16(o,1,true); o+=2;
+    view.setUint16(o,1,true); o+=2;
+    view.setUint32(o,sampleRate,true); o+=4;
+    view.setUint32(o,sampleRate*blockAlign,true); o+=4;
+    view.setUint16(o,blockAlign,true); o+=2;
+    view.setUint16(o,16,true); o+=2;
+    wstr(o,"data"); o+=4;
+    view.setUint32(o, pcm.byteLength, true); o+=4;
+
+    new Uint8Array(buffer,44).set(new Uint8Array(pcm.buffer));
+    return new Blob([buffer], {type:"audio/wav"});
+  }
+
+  async function render(){
+    const p = getParams();
+    const length = Math.floor(p.duration * p.sr);
+    const off = new OfflineAudioContext(1, length, p.sr);
+    const master = off.createGain(); master.connect(off.destination);
+    buildGraph(off, p, master, true);
+    const rendered = await off.startRendering();
+    const chan = rendered.getChannelData(0);
+    let peak = 0; for (let i=0;i<chan.length;i++){ const v = Math.abs(chan[i]); if (v>peak) peak=v; }
+    const norm = peak > 0 ? 1/peak : 1;
+    const normalized = new Float32Array(chan.length);
+    for(let i=0;i<chan.length;i++){ normalized[i] = chan[i]*norm; }
+    const blob = encodeWav(normalized, p.sr);
+    const url = URL.createObjectURL(blob);
+    const a = E('download');
+    a.href = url;
+    a.download = `illumina_sine_ritual_${p.duration}s_${p.sr}hz.wav`;
+    a.style.display = 'inline';
+    E('status').textContent = 'rendered — ready to download';
+  }
+
+  E('play').addEventListener('click', play);
+  E('stop').addEventListener('click', stop);
+  E('render').addEventListener('click', render);
+  E('viz').addEventListener('change', ()=>{ if (playing){ cancelAnimationFrame(rafId); draw(); }});
+  E('preset').addEventListener('change', e=>{
+    const v = e.target.value;
+    if (v==='demo1'){
+      E('duration').value = 60;
+      E('bee').value = 220; E('beeGain').value = 0.3;
+      E('moon').value = 55; E('moonGain').value = 0.2; E('moonMod').value = 0.2;
+      E('sun').value = 880; E('sunGain').value = 0.4; E('flareInt').value = 10; E('flareLen').value = 1;
+      E('master').value = 1; E('sr').value = 44100;
+    } else if (v==='ill42'){
+      E('duration').value = 42*60;
+      E('bee').value = 220; E('beeGain').value = 0.3;
+      E('moon').value = 55; E('moonGain').value = 0.2; E('moonMod').value = 0.2;
+      E('sun').value = 880; E('sunGain').value = 0.4; E('flareInt').value = 10; E('flareLen').value = 1;
+      E('master').value = 1; E('sr').value = 44100;
+    }
+  });
+
+  document.addEventListener('visibilitychange', ()=>{ if (document.hidden) { /* pause viz only */ if (rafId) cancelAnimationFrame(rafId); } else if (playing){ draw(); } });
+})();
+</script>
+</body>
+</html>
