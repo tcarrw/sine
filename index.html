@@ -117,4 +117,169 @@
     </div>
     <div class="controls">
       <button id="bnStart" class="primary">Start Binaural</button>
-      <button id="bnStop" class="ghost">Stop Bin
+      <button id="bnStop" class="ghost">Stop Binaural</button>
+    </div>
+    <div class="tiny">Headphones only. Left plays base; right plays base+beat to create the perceived rhythm in your brain.</div>
+  </section>
+
+  <!-- 3-Phase Calming Sequence -->
+  <section class="card">
+    <div class="kv"><strong>Calming Sequence</strong><span class="pill" id="seqState">Idle</span></div>
+    <div class="grid">
+      <div class="meter" id="seqMeter" style="width:0%"></div>
+      <div class="row-3">
+        <div>
+          <label for="t1">Phase 1 (Hz • sec)</label>
+          <input id="t1" type="text" value="136.1 • 60">
+        </div>
+        <div>
+          <label for="t2">Phase 2 (Hz • sec)</label>
+          <input id="t2" type="text" value="220 • 60">
+        </div>
+        <div>
+          <label for="t3">Phase 3 (Hz • sec)</label>
+          <input id="t3" type="text" value="128 • 30">
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="seqStart" class="primary">Start Sequence</button>
+      <button id="seqStop" class="ghost">Stop Sequence</button>
+    </div>
+    <div class="muted tiny">Format: “frequency • seconds”. Adjust to taste. This sequence is for relaxation and focus only.</div>
+  </section>
+
+  <section class="card">
+    <strong>Notes</strong>
+    <p class="muted">Use moderate volume. If you feel dizzy, anxious, or uncomfortable, stop and rest in silence.</p>
+  </section>
+</main>
+
+<script>
+let ctx=null;
+
+// Breath pacer
+let pacerTimer=null, inhale=4, exhale=6, orb=document.getElementById('orb');
+const inhEl=document.getElementById('inh'), exhEl=document.getElementById('exh'), pacerLabel=document.getElementById('pacerLabel');
+function pacerLoop(){
+  const total=(inhale+exhale)*1000;
+  let t=0, phase='inhale';
+  pacerTimer=setInterval(function(){
+    t+=100;
+    const ms=t%total;
+    if(ms < inhale*1000){
+      if(phase!=='inhale'){phase='inhale'}
+      const p=ms/(inhale*1000);
+      orb.style.transform='scale('+(1+ p*1.2)+')';
+      orb.style.opacity=String(0.7+0.3*p);
+    }else{
+      if(phase!=='exhale'){phase='exhale'}
+      const ems=ms - inhale*1000;
+      const p=1 - (ems/(exhale*1000));
+      orb.style.transform='scale('+(1+ p*1.2)+')';
+      orb.style.opacity=String(0.7+0.3*p);
+    }
+  },100);
+}
+document.getElementById('pacerStart').onclick=function(){
+  clearInterval(pacerTimer); pacerLoop();
+};
+document.getElementById('pacerStop').onclick=function(){
+  clearInterval(pacerTimer); orb.style.transform='scale(1)'; orb.style.opacity='0.9';
+};
+inhEl.oninput=function(){ inhale=Number(inhEl.value); pacerLabel.textContent=inhale+' in / '+exhale+' out'; };
+exhEl.oninput=function(){ exhale=Number(exhEl.value); pacerLabel.textContent=inhale+' in / '+exhale+' out'; };
+
+// Audio helpers
+function ac(){ if(!ctx){ ctx=new (window.AudioContext||window.webkitAudioContext)(); } return ctx; }
+function makeGain(g){ const node=ac().createGain(); node.gain.value=g; node.connect(ac().destination); return node; }
+
+// Single tone
+let toneOsc=null, toneGain=null;
+const freqEl=document.getElementById('freq'), gainEl=document.getElementById('gain'), shapeEl=document.getElementById('shape'), freqVal=document.getElementById('freqVal');
+freqEl.oninput=function(){ freqVal.textContent=Number(freqEl.value).toFixed(1)+' Hz'; if(toneOsc){ toneOsc.frequency.setValueAtTime(Number(freqEl.value), ac().currentTime); } };
+gainEl.oninput=function(){ if(toneGain){ toneGain.gain.setTargetAtTime(Number(gainEl.value), ac().currentTime, 0.02); } };
+document.getElementById('toneStart').onclick=function(){
+  if(toneOsc) return;
+  toneGain=makeGain(Number(gainEl.value));
+  toneOsc=ac().createOscillator();
+  toneOsc.type=shapeEl.value;
+  toneOsc.frequency.value=Number(freqEl.value);
+  toneOsc.connect(toneGain);
+  toneOsc.start();
+};
+document.getElementById('toneStop').onclick=function(){
+  if(!toneOsc) return;
+  toneOsc.stop(); toneOsc.disconnect(); toneGain.disconnect(); toneOsc=null; toneGain=null;
+};
+shapeEl.oninput=function(){ if(toneOsc){ toneOsc.type=shapeEl.value; } };
+
+// Binaural
+let bnLeftOsc=null, bnRightOsc=null, bnGain=null, bnMerger=null;
+const bnBase=document.getElementById('bnBase'), bnBeat=document.getElementById('bnBeat'), bnGainEl=document.getElementById('bnGain'), bnLabel=document.getElementById('bnLabel');
+function updateBnLabel(){ bnLabel.textContent='Base '+Number(bnBase.value).toFixed(1)+' Hz • Beat '+Number(bnBeat.value).toFixed(1)+' Hz'; }
+bnBase.oninput=updateBnLabel; bnBeat.oninput=updateBnLabel;
+bnGainEl.oninput=function(){ if(bnGain){ bnGain.gain.setTargetAtTime(Number(bnGainEl.value), ac().currentTime, 0.02); } };
+document.getElementById('bnStart').onclick=function(){
+  if(bnLeftOsc) return;
+  const A=ac();
+  bnGain=A.createGain(); bnGain.gain.value=Number(bnGainEl.value);
+  bnMerger=A.createChannelMerger(2);
+  bnMerger.connect(bnGain).connect(A.destination);
+  bnLeftOsc=A.createOscillator(); bnLeftOsc.type='sine'; bnLeftOsc.frequency.value=Number(bnBase.value);
+  bnRightOsc=A.createOscillator(); bnRightOsc.type='sine'; bnRightOsc.frequency.value=Number(bnBase.value)+Number(bnBeat.value);
+  const left=A.createGain(), right=A.createGain();
+  bnLeftOsc.connect(left); bnRightOsc.connect(right);
+  left.connect(bnMerger,0,0); right.connect(bnMerger,0,1);
+  bnLeftOsc.start(); bnRightOsc.start();
+  updateBnLabel();
+};
+document.getElementById('bnStop').onclick=function(){
+  if(!bnLeftOsc) return;
+  bnLeftOsc.stop(); bnRightOsc.stop();
+  bnLeftOsc.disconnect(); bnRightOsc.disconnect();
+  bnGain.disconnect(); bnMerger.disconnect();
+  bnLeftOsc=bnRightOsc=bnGain=bnMerger=null;
+};
+
+// Calming sequence
+let seqOsc=null, seqGain=null, seqTimer=null, seqProgress=0, seqTotal=0;
+const seqState=document.getElementById('seqState'), meter=document.getElementById('seqMeter');
+function parsePhase(txt){
+  const parts=txt.split('•').map(s=>s.trim());
+  const f=Number(parts[0]); const s=Number(parts[1]); if(!isFinite(f)||!isFinite(s)) return null;
+  return {freq:f, sec:s};
+}
+function stopSeq(){
+  clearInterval(seqTimer);
+  if(seqOsc){ seqOsc.stop(); seqOsc.disconnect(); seqGain.disconnect(); }
+  seqOsc=seqGain=null; seqTimer=null; seqProgress=0; seqTotal=0;
+  meter.style.width='0%'; seqState.textContent='Idle';
+}
+document.getElementById('seqStart').onclick=function(){
+  stopSeq();
+  const ph1=parsePhase(document.getElementById('t1').value);
+  const ph2=parsePhase(document.getElementById('t2').value);
+  const ph3=parsePhase(document.getElementById('t3').value);
+  const phases=[ph1,ph2,ph3].filter(Boolean);
+  if(!phases.length) return;
+  const A=ac(); seqGain=makeGain(0.2); seqOsc=A.createOscillator(); seqOsc.type='sine';
+  seqOsc.connect(seqGain); seqOsc.start();
+  seqTotal=phases.reduce((a,p)=>a+p.sec,0);
+  let idx=0, elapsed=0;
+  function setPhase(p){ seqOsc.frequency.setValueAtTime(p.freq,A.currentTime); seqState.textContent='Phase '+(idx+1)+' • '+p.freq+' Hz'; }
+  setPhase(phases[idx]);
+  seqTimer=setInterval(function(){
+    elapsed+=0.1; seqProgress=(elapsed/seqTotal)*100; meter.style.width=Math.min(100,seqProgress)+'%';
+    const cut=phases.slice(0,idx+1).reduce((a,p)=>a+p.sec,0);
+    if(elapsed>=cut && idx<phases.length-1){ idx++; setPhase(phases[idx]); }
+    if(elapsed>=seqTotal){ stopSeq(); }
+  },100);
+};
+document.getElementById('seqStop').onclick=stopSeq;
+
+// Accessibility: resume audio on user gesture if suspended
+document.addEventListener('click', function(){ if(ctx && ctx.state==='suspended'){ ctx.resume(); } }, {once:false});
+</script>
+</body>
+</html>
