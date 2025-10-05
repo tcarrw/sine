@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Resonance Mode — Sound · Color · Breath</title>
+<meta name="description" content="Non-writing progress: tune a tone, set a color, feel a steady breath. Optional mic glow when your hum is steady.">
+<style>
+  :root{
+    --bg:#0b0b10; --fg:#f3f5f7; --muted:#a9b0b7; --accent:#ffd86b; --card:#14161c; --ring:#2a2f3a;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif;
+    color:var(--fg); background: radial-gradient(120vmax 120vmax at 50% -20%, #22283a 0%, #0b0b10 60%);
+  }
+  .wrap{max-width:840px;margin:0 auto;padding:20px 14px 80px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+  h1{font-size:18px;margin:0;letter-spacing:.3px;font-weight:650}
+  .pill{font-size:12px;background:rgba(255,255,255,.06);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08)}
+  .grid{display:grid;gap:16px}
+  @media (min-width:760px){ .grid{grid-template-columns:1fr 1fr} }
+  section.card{
+    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; position:relative; overflow:hidden;
+  }
+  section.card h2{margin:0 0 10px 0; font-size:15px; letter-spacing:.2px}
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ctrl{display:flex;align-items:center;gap:10px}
+  input[type="range"]{width:100%}
+  .btn{
+    appearance:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--fg);
+    padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:transform .07s ease;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.primary{border-color:rgba(255,216,107,.55);background:linear-gradient(180deg, rgba(255,216,107,.25), rgba(255,216,107,.12))}
+  .val{font-variant-numeric:tabular-nums;font-weight:650}
+  .toneDot{
+    width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.45);
+    background:conic-gradient(from 0deg, #fff, #fff);
+  }
+  .canvasWrap{position:relative;display:grid;place-items:center}
+  canvas{touch-action:none;background:radial-gradient(100% 100% at 50% 50%, #0d0f16 0%, #0b0b10 80%);border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+  .chips{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{
+    padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);font-size:12px
+  }
+  .swatch{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:inline-block;vertical-align:-4px;margin-right:6px}
+  .meter{
+    height:12px;width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden
+  }
+  .meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg, #9be7ff, #ffd86b);transition:width .18s ease}
+  .breath{
+    display:grid;place-items:center;height:220px;border-radius:12px;border:1px solid rgba(255,255,255,.08);
+    background:radial-gradient(90% 90% at 50% 50%, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    position:relative; overflow:hidden;
+  }
+  .orb{
+    width:90px;height:90px;border-radius:50%;
+    background:radial-gradient(80% 80% at 35% 30%, rgba(255,255,255,.85), rgba(255,255,255,.18));
+    box-shadow:0 0 40px 0 rgba(255,216,107,.18), inset 0 0 20px rgba(255,255,255,.2);
+    transition:transform 2.2s ease-in-out, filter .3s ease;
+  }
+  .orb.inhale{transform:scale(1.17)}
+  .orb.exhale{transform:scale(0.93)}
+  .glow{position:absolute;inset:0;border-radius:12px;pointer-events:none;opacity:.0;transition:opacity .3s ease, box-shadow .3s ease}
+  .glow.on{opacity:.8; box-shadow:0 0 80px 10px rgba(255,216,107,.25) inset, 0 0 90px 10px rgba(155,231,255,.22) inset}
+  footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Resonance Mode</h1>
+    <div class="pill">No writing • Feel the shift</div>
+  </header>
+
+  <div class="grid">
+    <!-- SOUND -->
+    <section class="card" id="soundCard">
+      <h2>Sound · Tune your field</h2>
+      <div class="row" style="gap:14px">
+        <button class="btn primary" id="toneBtn">Tone: Off</button>
+        <div class="val"><span id="hzVal">220</span> Hz</div>
+        <div class="toneDot" id="toneDot"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <input id="hz" type="range" min="40" max="1200" step="1" value="220" aria-label="Frequency (Hz)">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label class="chip"><input id="soft" type="checkbox" checked> Soft start</label>
+        <label class="chip"><input id="smooth" type="checkbox" checked> Smooth glide</label>
+        <div class="chip">Touch slider · hum to match</div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="meter" aria-label="Output level"><i id="level"></i></div>
+      </div>
+    </section>
+
+    <!-- COLOR -->
+    <section class="card" id="colorCard">
+      <h2>Color · Pick & see the complement</h2>
+      <div class="canvasWrap" style="margin-bottom:10px">
+        <canvas id="wheel" width="360" height="360" aria-label="Color wheel"></canvas>
+      </div>
+      <div class="chips">
+        <div class="chip"><span class="swatch" id="swatch"></span><span id="hex">#ffd86b</span></div>
+        <div class="chip">Complement: <span class="swatch" id="swatchC"></span><span id="hexC">#2b49ff</span></div>
+        <div class="chip" id="labelHue">Hue 48°</div>
+      </div>
+    </section>
+
+    <!-- MIC STEADINESS -->
+    <section class="card" id="micCard">
+      <h2>Mic Glow · Hold a steady hum</h2>
+      <div class="row" style="gap:12px">
+        <button class="btn" id="micBtn">Mic: Off</button>
+        <div class="chip">Steadiness: <span class="val" id="steady">0%</span></div>
+        <div class="chip">Level: <span class="val" id="micDb">–∞ dB</span></div>
+      </div>
+      <div class="breath" style="margin-top:12px">
+        <div class="glow" id="micGlow"></div>
+        <div class="orb" id="orb"></div>
+      </div>
+      <p style="margin:10px 0 0;color:var(--muted);font-size:12px">If the percentage climbs and the card glows, your hum is steady. No data saved.</p>
+    </section>
+
+    <!-- BREATH -->
+    <section class="card" id="breathCard">
+      <h2>Breath · One-minute reset</h2>
+      <div class="row" style="gap:10px">
+        <button class="btn" id="bStart">Start</button>
+        <button class="btn" id="bStop">Stop</button>
+        <div class="chip">Pattern: <span class="val" id="bPattern">4 • 4 • 4</span></div>
+      </div>
+      <div class="breath" style="margin-top:12px">
+        <div class="glow" id="bGlow"></div>
+        <div class="orb" id="bOrb"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label class="chip">In <input id="bIn" type="number" min="2" max="10" value="4" style="width:48px">s</label>
+        <label class="chip">Hold <input id="bHold" type="number" min="0" max="10" value="4" style="width:48px">s</label>
+        <label class="chip">Out <input id="bOut" type="number" min="2" max="12" value="4" style="width:48px">s</label>
+      </div>
+    </section>
+  </div>
+
+  <footer>Open the page, feel alignment, then close it. That’s the “log.”</footer>
+</div>
+
+<script>
+(function(){
+  let ac, osc, gainNode;
+  let running = false;
+
+  function ensureAudio(){
+    if(ac) return;
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = ac.createGain();
+    gainNode.gain.value = 0;
+    gainNode.connect(ac.destination);
+    osc = ac.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = +hz.value;
+    osc.connect(gainNode);
+    osc.start();
+  }
+
+  const hz = document.getElementById('hz');
+  const hzVal = document.getElementById('hzVal');
+  const toneBtn = document.getElementById('toneBtn');
+  const levelBar = document.getElementById('level');
+  const soft = document.getElementById('soft');
+  const smooth = document.getElementById('smooth');
+  const toneDot = document.getElementById('toneDot');
+
+  hz.addEventListener('input', ()=>{
+    hzVal.textContent = hz.value;
+    if(osc){
+      if(smooth.checked){
+        const now = ac.currentTime;
+        osc.frequency.cancelScheduledValues(now);
+        osc.frequency.setTargetAtTime(+hz.value, now, 0.06);
+      }else{
+        osc.frequency.value = +hz.value;
+      }
+    }
+    toneDot.style.background = `conic-gradient(from 0deg, #fff, #fff ${Math.min(100,(hz.value-40)/(1200-40)*100)}%, rgba(255,255,255,.25) 0)`;
+  });
+
+  function setOutput(on){
+    if(!ac) ensureAudio();
+    const target = on ? 0.18 : 0;
+    const t = soft.checked ? 0.07 : 0.01;
+    const now = ac.currentTime;
+    gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setTargetAtTime(target, now, t);
+    running = on;
+    toneBtn.textContent = on ? 'Tone: On' : 'Tone: Off';
+  }
+
+  toneBtn.addEventListener('click', async ()=>{
+    ensureAudio();
+    if(ac.state === 'suspended') await ac.resume();
+    setOutput(!running);
+  });
+
+  // Simple output level animation
+  let lvlPh=0;
+  function animLevel(){
+    lvlPh += 0.03 + (running?0.02:0);
+    const synthLevel = running ? (0.4 + 0.4*Math.sin(lvlPh)) : 0;
+    levelBar.style.width = (synthLevel*100).toFixed(0)+'%';
+    requestAnimationFrame(animLevel);
+  }
+  animLevel();
+
+  // COLOR WHEEL
+  const wheel = document.getElementById('wheel');
+  const wctx = wheel.getContext('2d');
+  const sw = document.getElementById('swatch');
+  const swc = document.getElementById('swatchC');
+  const hex = document.getElementById('hex');
+  const hexC = document.getElementById('hexC');
+  const labelHue = document.getElementById('labelHue');
+
+  function drawWheel(){
+    const r = wheel.width/2;
+    const cx = r, cy = r;
+    for(let a=0;a<360;a++){
+      const grad = wctx.createRadialGradient(cx,cy,0,cx,cy,r);
+      grad.addColorStop(0, 'hsl('+a+',100%,50%)');
+      grad.addColorStop(1, 'hsl('+a+',100%,50%)');
+      wctx.strokeStyle = grad;
+      wctx.beginPath();
+      wctx.arc(cx,cy,r-1,(a-1)*Math.PI/180,a*Math.PI/180);
+      wctx.stroke();
+    }
+    // inner fade to neutral
+    const g = wctx.createRadialGradient(cx,cy,0,cx,cy,r);
+    g.addColorStop(0,'rgba(11,11,16,0.35)');
+    g.addColorStop(0.7,'rgba(11,11,16,0)');
+    g.addColorStop(1,'rgba(11,11,16,0)');
+    wctx.fillStyle = g; wctx.beginPath(); wctx.arc(cx,cy,r,0,Math.PI*2); wctx.fill();
+  }
+  function hslToRgb(h,s,l){
+    s/=100; l/=100;
+    const k=n=> (n+ h/30)%12;
+    const a = s*Math.min(l,1-l);
+    const f=n=> l - a*Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n),1)));
+    return [Math.round(255*f(0)),Math.round(255*f(8)),Math.round(255*f(4))];
+  }
+  function rgbToHex(r,g,b){
+    return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  function setHue(h){
+    const [r,g,b]=hslToRgb(h,100,50);
+    const [rc,gc,bc]=hslToRgb((h+180)%360,100,50);
+    const h1 = rgbToHex(r,g,b);
+    const h2 = rgbToHex(rc,gc,bc);
+    sw.style.background = h1; swc.style.background = h2;
+    hex.textContent = h1; hexC.textContent = h2;
+    labelHue.textContent = 'Hue '+Math.round(h)+'°';
+    document.body.style.background = `radial-gradient(120vmax 120vmax at 50% -20%, ${h1}22 0%, #0b0b10 60%)`;
+  }
+  drawWheel();
+  setHue(48);
+
+  function pointerHue(ev){
+    const rect = wheel.getBoundingClientRect();
+    const x = (ev.touches? ev.touches[0].clientX:ev.clientX) - rect.left;
+    const y = (ev.touches? ev.touches[0].clientY:ev.clientY) - rect.top;
+    const cx = wheel.width/2, cy = wheel.height/2;
+    const dx = (x*wheel.width/rect.width) - cx;
+    const dy = (y*wheel.height/rect.height) - cy;
+    let ang = Math.atan2(dy,dx)*180/Math.PI;
+    if(ang<0) ang+=360;
+    setHue(ang);
+  }
+  wheel.addEventListener('pointerdown', e=>{pointerHue(e); wheel.setPointerCapture(e.pointerId);});
+  wheel.addEventListener('pointermove', e=>{ if(e.buttons===1) pointerHue(e);});
+  wheel.addEventListener('touchstart', e=>{pointerHue(e);},{passive:true});
+  wheel.addEventListener('touchmove', e=>{pointerHue(e);},{passive:true});
+
+  // MIC STEADINESS (optional)
+  const micBtn = document.getElementById('micBtn');
+  const steady = document.getElementById('steady');
+  const micDb = document.getElementById('micDb');
+  const micGlow = document.getElementById('micGlow');
+  let micOn=false, analyser, micSrc, micBuf, lastSpec=null, stableScore=0;
+
+  micBtn.addEventListener('click', async ()=>{
+    if(!micOn){
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        if(!ac) ensureAudio(); if(ac.state==='suspended') await ac.resume();
+        analyser = ac.createAnalyser();
+        analyser.fftSize = 1024;
+        analyser.smoothingTimeConstant = 0.6;
+        micSrc = ac.createMediaStreamSource(stream);
+        micSrc.connect(analyser);
+        micBuf = new Uint8Array(analyser.frequencyBinCount);
+        micOn=true; micBtn.textContent='Mic: On';
+        loopMic();
+      }catch(e){
+        micBtn.textContent='Mic: Unavailable';
+      }
+    }else{
+      micOn=false; micBtn.textContent='Mic: Off'; micGlow.classList.remove('on'); steady.textContent='0%'; micDb.textContent='–∞ dB';
+      analyser = null; micSrc = null; lastSpec=null; stableScore=0;
+    }
+  });
+
+  function loopMic(){
+    if(!micOn || !analyser) return;
+    analyser.getByteFrequencyData(micBuf);
+    // Loudness (rough dB)
+    let sum=0;
+    for(let i=0;i<micBuf.length;i++) sum += micBuf[i]*micBuf[i];
+    const rms = Math.sqrt(sum/micBuf.length)/255;
+    const db = 20*Math.log10(rms||1e-6);
+    micDb.textContent = (db> -60 ? db.toFixed(1): '–∞')+' dB';
+
+    // Steadiness = inverse of spectral change
+    let diff=0;
+    if(lastSpec){
+      for(let i=0;i<micBuf.length;i++){
+        diff += Math.abs(micBuf[i]-lastSpec[i]);
+      }
+      diff/=micBuf.length*255;
+    }
+    lastSpec = micBuf.slice(0);
+    const loud = Math.min(1, Math.max(0, (db+40)/20));      // -40..-20 dB → 0..1
+    const stable = Math.max(0, 1 - diff*4);                 // lower diff → higher stability
+    const score = loud * stable;
+    // Smooth the display
+    stableScore = 0.85*stableScore + 0.15*score;
+    const pct = Math.round(stableScore*100);
+    steady.textContent = pct+'%';
+    if(pct>65){ micGlow.classList.add('on'); } else { micGlow.classList.remove('on'); }
+    requestAnimationFrame(loopMic);
+  }
+
+  // BREATH
+  const bStart = document.getElementById('bStart');
+  const bStop = document.getElementById('bStop');
+  const bIn = document.getElementById('bIn');
+  const bHold = document.getElementById('bHold');
+  const bOut = document.getElementById('bOut');
+  const bPattern = document.getElementById('bPattern');
+  const bOrb = document.getElementById('bOrb');
+  const bGlow = document.getElementById('bGlow');
+  let breathReq=null, breathPhase=0, breathTimer=0, breathState='idle';
+
+  function updatePatternLabel(){
+    bPattern.textContent = `${+bIn.value} • ${+bHold.value} • ${+bOut.value}`;
+  }
+  bIn.addEventListener('input',updatePatternLabel);
+  bHold.addEventListener('input',updatePatternLabel);
+  bOut.addEventListener('input',updatePatternLabel);
+  updatePatternLabel();
+
+  function breathLoop(ts){
+    if(!breathTimer) breathTimer = ts;
+    const dt = (ts - breathTimer)/1000;
+    breathTimer = ts;
+    let tIn=+bIn.value, tHold=+bHold.value, tOut=+bOut.value;
+    if(breathState==='idle'){ breathState='inhale'; breathPhase=0; bGlow.classList.remove('on'); }
+
+    breathPhase+=dt;
+    if(breathState==='inhale'){
+      bOrb.classList.add('inhale'); bOrb.classList.remove('exhale');
+      if(breathPhase>=tIn){ breathState = tHold>0 ? 'hold' : 'exhale'; breathPhase=0; }
+    }else if(breathState==='hold'){
+      bOrb.style.filter='saturate(1.15) brightness(1.15)';
+      if(breathPhase>=tHold){ breathState='exhale'; breathPhase=0; bOrb.style.filter=''; }
+    }else if(breathState==='exhale'){
+      bOrb.classList.add('exhale'); bOrb.classList.remove('inhale');
+      if(breathPhase>=tOut){ breathState='inhale'; breathPhase=0; }
+    }
+    breathReq = requestAnimationFrame(breathLoop);
+  }
+  bStart.addEventListener('click',()=>{
+    bGlow.classList.add('on');
+    if(!breathReq) requestAnimationFrame(breathLoop);
+  });
+  bStop.addEventListener('click',()=>{
+    bGlow.classList.remove('on');
+    if(breathReq){ cancelAnimationFrame(breathReq); breathReq=null; }
+    bOrb.classList.remove('inhale','exhale'); bOrb.style.filter='';
+    breathState='idle'; breathPhase=0; breathTimer=0;
+  });
+})();
+</script>
+</body>
+</html>
