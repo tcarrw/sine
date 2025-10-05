@@ -3,382 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>sine.plnt.earth — Buzz Card</title>
-<meta name="description" content="A gentle daily sine-tone practice card with timer, notes, and local-only logging.">
-<meta name="theme-color" content="#0B0F19">
+<title>Sine — Calm & Breath</title>
+<meta name="description" content="Local tone generator for relaxation: breath pacer, single tone, optional binaural beat, and a gentle 3-phase calming sequence.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-video-preview:-1,max-snippet:-1">
 <style>
   :root{
-    --bg:#0B0F19;--ink:#E6EAF2;--muted:#9AA6B2;--line:rgba(230,234,242,.12);
-    --card:#0F1524;--hi:#A4E8FF;--ok:#34D399;--warn:#FBBF24;--bad:#F87171;
-    --focus:0 0 0 3px rgba(164,232,255,.35);
-    --gap:14px; --radius:14px; --shadow:0 8px 30px rgba(0,0,0,.25);
-    --maxw:880px; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    --bg:#0B0F19;--ink:#E6EAF2;--muted:#A5B4CF;--line:rgba(255,255,255,.12);
+    --card:#0F1524;--hi:#FFD6A8;--ok:#7EE7D9;--warn:#FBBF24;
+    --accent:#F2A6B3;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;background:linear-gradient(180deg,#0B0F19 0%, #0B0F19 60%, #0c1224 100%);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
-  header{max-width:var(--maxw);margin:28px auto 12px;padding:0 16px}
-  header h1{margin:0 0 6px;font-size:22px;letter-spacing:.3px}
-  header p{margin:0;color:var(--muted);font-size:14px}
-  .wrap{max-width:var(--maxw);margin:0 auto 48px;padding:0 16px;display:grid;gap:var(--gap)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-  .pad{padding:18px}
-  .grid{display:grid;gap:var(--gap)}
-  .row{display:grid;gap:10px}
-  @media (min-width:780px){
-    .row.two{grid-template-columns:1fr 1fr}
-    .row.three{grid-template-columns:1fr 1fr 1fr}
-  }
-  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-  input[type="text"],input[type="number"],input[type="date"],select,textarea{
-    width:100%;background:#0B1120;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 12px;font-size:14px;outline:none
-  }
-  textarea{min-height:84px;resize:vertical}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial}
+  header{padding:24px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(255,214,168,.08),transparent)}
+  h1{margin:0 0 6px;font-size:20px}
+  p{margin:0;color:var(--muted)}
+  main{max-width:860px;margin:0 auto;padding:20px;display:grid;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
   input[type="range"]{width:100%}
-  input:focus,select:focus,textarea:focus{box-shadow:var(--focus);border-color:#3a4a6a}
-  .hint{color:var(--muted);font-size:12px}
-  .inline{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}
-  .btn{
-    appearance:none;border:1px solid var(--line);background:#0B1120;color:var(--ink);padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer
-  }
-  .btn:hover{border-color:#2a3148}
-  .btn.primary{background:linear-gradient(180deg,#122043,#0e1a36);border-color:#1c294a}
-  .btn.good{background:linear-gradient(180deg,#0f2d28,#0b231f);border-color:#1e3b34}
-  .btn.warn{background:linear-gradient(180deg,#3a2a09,#2d2007);border-color:#5f450d}
-  .btn.danger{background:linear-gradient(180deg,#3b1717,#2b1111);border-color:#5f1f1f}
-  .hr{height:1px;background:var(--line);margin:14px 0}
-  .title{font-size:16px;font-weight:700;margin:0 0 10px}
-  .small{font-size:12px;color:var(--muted)}
-  .list{display:grid;gap:10px}
-  .entry{border:1px dashed var(--line);border-radius:12px;padding:12px}
-  .right{margin-left:auto}
-  .center{text-align:center}
-  .breath{height:64px;display:flex;align-items:center;justify-content:center}
-  .dot{width:14px;height:14px;border-radius:50%;background:var(--hi);opacity:.6;animation:breath 6s ease-in-out infinite}
-  @keyframes breath{0%{transform:scale(.8);opacity:.4}50%{transform:scale(1.2);opacity:.9}100%{transform:scale(.8);opacity:.4}}
-  .warnbox{background:#2b1f08;border:1px solid rgba(251,191,36,.35);color:#FDE68A;border-radius:10px;padding:10px;font-size:13px}
-  .foot{color:var(--muted);font-size:12px;text-align:center;padding:18px}
-  /* Print-friendly */
-  @media print{
-    .btn,.breath,.hr,.warnbox,.foot{display:none !important}
-    body{background:#fff;color:#000}
-    .card{border:1px solid #ccc;box-shadow:none}
-    input,select,textarea{border:1px solid #999}
-  }
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  button{appearance:none;border:1px solid var(--line);background:#151b2a;color:var(--ink);
+    padding:10px 14px;border-radius:10px;cursor:pointer}
+  button.primary{background:var(--accent);color:#111;border-color:transparent}
+  button.ghost{background:transparent}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-size:12px}
+  .kv{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .value{min-width:64px;text-align:right;color:var(--hi);font-variant-numeric:tabular-nums}
+  .breath{display:flex;justify-content:center;align-items:center;height:220px;position:relative}
+  .orb{width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffe9d4, #d39ea8 60%, #7e79f0);
+    filter:blur(0.2px);opacity:.9;transition:transform .6s ease, opacity .6s ease}
+  .meter{height:6px;background:linear-gradient(90deg,var(--ok),var(--accent));border-radius:6px;transition:width .3s}
+  .muted{color:var(--muted);font-size:13px}
+  .grid{display:grid;gap:10px}
+  .tiny{font-size:12px;color:var(--muted)}
+  @media (max-width:720px){.row,.row-3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header>
-  <h1>🌊 Buzz Card — Day 1</h1>
-  <p>Gentle daily sine-tone practice with timer & notes. Your entries are stored <em>locally</em> in your browser.</p>
+  <h1>Sine — Calm & Breath</h1>
+  <p>Gentle tones for relaxation, focus, and breath pacing. Headphones recommended for binaural mode.</p>
 </header>
 
-<main class="wrap">
-  <section class="card pad grid">
-    <div class="warnbox">
-      Keep volume modest. Start with <strong>100–200&nbsp;Hz</strong> for 3–5 minutes. If anything feels uncomfortable, <strong>stop</strong>.
-    </div>
-
-    <div class="breath"><div class="dot" aria-hidden="true"></div></div>
-
-    <div class="row two">
-      <div>
-        <label for="date">Date</label>
-        <input id="date" type="date" aria-label="Date">
-      </div>
-      <div>
-        <label for="cycle">Cycle / Illumina #</label>
-        <input id="cycle" type="text" placeholder="e.g., Illumina 1">
-      </div>
-    </div>
-
-    <div class="card pad grid" style="background:#0b1120">
-      <div class="title">🎛 Tone Settings</div>
-      <div class="row three">
-        <div>
-          <label for="freq">Frequency (Hz)</label>
-          <input id="freq" type="number" min="20" max="1200" step="1" value="150">
-          <div class="hint">Tip: start 100–200 Hz; explore later.</div>
-        </div>
-        <div>
-          <label for="dur">Duration (minutes)</label>
-          <input id="dur" type="number" min="1" max="30" step="1" value="5">
-        </div>
-        <div>
-          <label for="volume">Volume</label>
-          <select id="volume">
-            <option value="0.08">Low</option>
-            <option value="0.14" selected>Medium</option>
-            <option value="0.2">Medium-High</option>
-          </select>
-          <div class="hint">Hard limit set to protect ears.</div>
-        </div>
-      </div>
-
-      <div class="row two">
-        <div>
-          <label>Output</label>
-          <div class="inline">
-            <label class="badge"><input type="radio" name="out" value="Headphones" checked> Headphones</label>
-            <label class="badge"><input type="radio" name="out" value="Speakers"> Speakers</label>
-          </div>
-        </div>
-        <div class="inline" style="justify-content:flex-end;gap:8px">
-          <button id="testBtn" class="btn">Test 2s</button>
-          <button id="startBtn" class="btn primary">Start</button>
-          <button id="stopBtn" class="btn danger" disabled>Stop</button>
-        </div>
-      </div>
-
-      <div class="inline" aria-live="polite" style="justify-content:space-between">
-        <div class="badge">Status: <span id="status">idle</span></div>
-        <div class="badge">Time left: <span id="timeLeft">00:00</span></div>
-      </div>
-    </div>
-
+<main>
+  <!-- Breath Pacer -->
+  <section class="card">
+    <div class="kv"><strong>Breath Pacer</strong><span class="pill" id="pacerLabel">4 in / 6 out</span></div>
+    <div class="breath"><div class="orb" id="orb"></div></div>
     <div class="row">
       <div>
-        <label for="intent">🌑 Intention (before)</label>
-        <textarea id="intent" placeholder="One line — e.g., grounding before work"></textarea>
-      </div>
-      <div class="row three">
-        <div>
-          <label for="body">Body feel (during)</label>
-          <input id="body" type="text" placeholder="e.g., warm chest, steady breath">
-        </div>
-        <div>
-          <label for="mind">Mind feel (during)</label>
-          <input id="mind" type="text" placeholder="e.g., calm, focused, drifty">
-        </div>
-        <div>
-          <label for="emotion">Emotional color (during)</label>
-          <input id="emotion" type="text" placeholder="e.g., violet, gold, clear">
-        </div>
+        <label for="inh">Inhale seconds</label>
+        <input id="inh" type="range" min="2" max="8" step="1" value="4">
       </div>
       <div>
-        <label for="reflect">🌕 Reflection (after)</label>
-        <textarea id="reflect" placeholder="One short win — e.g., calmer, good focus"></textarea>
-      </div>
-      <div>
-        <label for="archive">🐝 Archive (Illumina note)</label>
-        <textarea id="archive" placeholder="Optional: how this threads into your Illumina log"></textarea>
+        <label for="exh">Exhale seconds</label>
+        <input id="exh" type="range" min="3" max="12" step="1" value="6">
       </div>
     </div>
-
-    <div class="inline" style="justify-content:space-between">
-      <div class="inline" style="gap:8px;flex-wrap:wrap">
-        <button id="saveBtn" class="btn good">Save Entry</button>
-        <button id="newBtn" class="btn">New / Clear</button>
-      </div>
-      <div class="inline" style="gap:8px;flex-wrap:wrap">
-        <button id="exportBtn" class="btn">Export JSON</button>
-        <button id="printBtn" class="btn warn">Print / PDF</button>
-      </div>
+    <div class="controls">
+      <button id="pacerStart" class="primary">Start Pacer</button>
+      <button id="pacerStop" class="ghost">Stop Pacer</button>
     </div>
   </section>
 
-  <section class="card pad grid">
-    <div class="title">📜 Your Entries (local)</div>
-    <div class="small">Saved to your browser only. Click an entry to load it.</div>
-    <div id="entries" class="list"></div>
+  <!-- Tone Generator -->
+  <section class="card">
+    <div class="kv"><strong>Single Tone</strong><span class="value" id="freqVal">136.1 Hz</span></div>
+    <div class="row-3">
+      <div>
+        <label for="freq">Frequency (Hz)</label>
+        <input id="freq" type="range" min="20" max="1000" step="0.1" value="136.1">
+      </div>
+      <div>
+        <label for="gain">Volume</label>
+        <input id="gain" type="range" min="0" max="1" step="0.001" value="0.25">
+      </div>
+      <div>
+        <label for="shape">Wave</label>
+        <select id="shape">
+          <option>sine</option>
+          <option>triangle</option>
+          <option>sawtooth</option>
+          <option>square</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="toneStart" class="primary">Start Tone</button>
+      <button id="toneStop" class="ghost">Stop Tone</button>
+    </div>
+    <div class="tiny">Tip: 128–150 Hz can feel chest-centered; 220 Hz often feels “voice-like”.</div>
   </section>
-</main>
 
-<footer class="foot">
-  sine.plnt.earth — single-file, local-first. No trackers. Be gentle.
-</footer>
-
-<script>
-(function(){
-  const $ = id => document.getElementById(id);
-  const date = $('date'), cycle = $('cycle'), freq = $('freq'), dur = $('dur'), volume = $('volume');
-  const intent = $('intent'), body = $('body'), mind = $('mind'), emotion = $('emotion'), reflect = $('reflect'), archive = $('archive');
-  const statusEl = $('status'), timeLeft = $('timeLeft'), entriesEl = $('entries');
-  const startBtn = $('startBtn'), stopBtn = $('stopBtn'), testBtn = $('testBtn');
-  const saveBtn = $('saveBtn'), newBtn = $('newBtn'), exportBtn = $('exportBtn'), printBtn = $('printBtn');
-
-  // Default date = today (local)
-  const today = new Date(); date.value = new Date(today.getTime() - today.getTimezoneOffset()*60000).toISOString().slice(0,10);
-
-  // Web Audio setup
-  let ctx, osc, gain, timer, endTime = 0, running = false;
-
-  function ensureAudio(){
-    if(!ctx){
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      gain = ctx.createGain();
-      gain.gain.value = Number(volume.value); // clamped by select
-      gain.connect(ctx.destination);
-    }
-  }
-
-  function startTone(seconds){
-    ensureAudio();
-    if(running) return;
-    const hz = clamp(Number(freq.value)||150, 20, 1200);
-    const vol = clamp(Number(volume.value)||0.14, 0, 0.2);
-    gain.gain.setTargetAtTime(vol, ctx.currentTime, 0.01);
-    osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setTargetAtTime(hz, ctx.currentTime, 0.01);
-    osc.connect(gain);
-    osc.start();
-    running = true;
-    statusEl.textContent = 'playing';
-    stopBtn.disabled = false; startBtn.disabled = true; testBtn.disabled = true;
-    const now = performance.now();
-    endTime = now + (seconds*1000);
-    updateCountdown();
-  }
-
-  function stopTone(){
-    if(!running) return;
-    try{ osc.stop(); }catch(e){}
-    try{ osc.disconnect(); }catch(e){}
-    running = false;
-    statusEl.textContent = 'idle';
-    stopBtn.disabled = true; startBtn.disabled = false; testBtn.disabled = false;
-    timeLeft.textContent = '00:00';
-    if(timer){ cancelAnimationFrame(timer); timer = null; }
-  }
-
-  function updateCountdown(){
-    if(!running){ return; }
-    const now = performance.now();
-    const ms = Math.max(0, endTime - now);
-    const sec = Math.ceil(ms/1000);
-    const mm = String(Math.floor(sec/60)).padStart(2,'0');
-    const ss = String(sec%60).padStart(2,'0');
-    timeLeft.textContent = mm+':'+ss;
-    if(ms <= 0){ stopTone(); return; }
-    timer = requestAnimationFrame(updateCountdown);
-  }
-
-  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
-
-  function getOutput(){
-    const nodes = document.querySelectorAll('input[name="out"]');
-    for(const n of nodes){ if(n.checked) return n.value; }
-    return 'Headphones';
-  }
-
-  function clearForm(){
-    // keep date/cycle
-    freq.value = 150; dur.value = 5; volume.value = '0.14';
-    intent.value = ''; body.value=''; mind.value=''; emotion.value=''; reflect.value=''; archive.value='';
-    const outs = document.querySelectorAll('input[name="out"]'); outs[0].checked = true;
-  }
-
-  function saveEntry(){
-    const data = {
-      date: date.value,
-      cycle: cycle.value.trim(),
-      freq: clamp(Number(freq.value)||150, 20, 1200),
-      dur: clamp(Number(dur.value)||5, 1, 60),
-      volume: Number(volume.value),
-      output: getOutput(),
-      intent: intent.value.trim(),
-      body: body.value.trim(),
-      mind: mind.value.trim(),
-      emotion: emotion.value.trim(),
-      reflect: reflect.value.trim(),
-      archive: archive.value.trim(),
-      savedAt: new Date().toISOString()
-    };
-    const all = loadAll();
-    all.unshift(data);
-    localStorage.setItem('sineBuzzEntries', JSON.stringify(all));
-    renderEntries(all);
-  }
-
-  function loadAll(){
-    try{
-      const raw = localStorage.getItem('sineBuzzEntries');
-      return raw ? JSON.parse(raw) : [];
-    }catch(e){ return []; }
-  }
-
-  function renderEntries(list){
-    entriesEl.innerHTML = '';
-    if(!list.length){
-      const d = document.createElement('div');
-      d.className = 'small';
-      d.textContent = 'No entries yet.';
-      entriesEl.appendChild(d);
-      return;
-    }
-    list.forEach((item, idx)=>{
-      const div = document.createElement('button');
-      div.type = 'button';
-      div.className = 'entry';
-      div.style.textAlign = 'left';
-      div.innerHTML = `
-        <div class="inline" style="justify-content:space-between;align-items:center">
-          <strong>${item.date || '—'} • ${item.freq} Hz • ${item.dur} min</strong>
-          <span class="badge">${item.output}</span>
-        </div>
-        <div class="small">${escapeHtml(item.intent || 'No intention')} — <em>${escapeHtml(item.reflect || 'No reflection')}</em></div>
-      `;
-      div.addEventListener('click', ()=> loadIntoForm(item));
-      entriesEl.appendChild(div);
-    });
-  }
-
-  function loadIntoForm(item){
-    date.value = item.date || date.value;
-    cycle.value = item.cycle || '';
-    freq.value = item.freq || 150;
-    dur.value = item.dur || 5;
-    volume.value = String(item.volume ?? 0.14);
-    const outs = document.querySelectorAll('input[name="out"]');
-    for(const n of outs){ n.checked = (n.value === (item.output || 'Headphones')); }
-    intent.value = item.intent || '';
-    body.value = item.body || '';
-    mind.value = item.mind || '';
-    emotion.value = item.emotion || '';
-    reflect.value = item.reflect || '';
-    archive.value = item.archive || '';
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-
-  function exportJSON(){
-    const data = JSON.stringify(loadAll(), null, 2);
-    const blob = new Blob([data], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'sineBuzzEntries.json';
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
-  }
-
-  // Event wiring
-  startBtn.addEventListener('click', ()=>{
-    const minutes = clamp(Number(dur.value)||5, 1, 60);
-    startTone(minutes*60);
-  });
-  stopBtn.addEventListener('click', stopTone);
-  testBtn.addEventListener('click', ()=> startTone(2));
-  saveBtn.addEventListener('click', saveEntry);
-  newBtn.addEventListener('click', clearForm);
-  exportBtn.addEventListener('click', exportJSON);
-  printBtn.addEventListener('click', ()=> window.print());
-  volume.addEventListener('change', ()=>{
-    if(gain) gain.gain.setTargetAtTime(Number(volume.value), ctx.currentTime, 0.01);
-  });
-
-  // Render existing
-  renderEntries(loadAll());
-
-  // Safety: stop tone if page hidden/unload
-  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) stopTone(); });
-  window.addEventListener('pagehide', stopTone);
-})();
-</script>
-</body>
-</html>
+  <!-- Binaural Beat -->
+  <section class="card">
+    <div class="kv"><strong>Binaural</strong><span class="pill" id="bnLabel">Base 220 Hz • Beat 8 Hz</span></div>
+    <div class="row-3">
+      <div>
+        <label for="bnBase">Base (Hz)</label>
+        <input id="bnBase" type="range" min="80" max="600" step="0.1" value="220">
+      </div>
+      <div>
+        <label for="bnBeat">Beat (Hz)</label>
+        <input id="bnBeat" type="range" min="1" max="12" step="0.1" value="8">
+      </div>
+      <div>
+        <label for="bnGain">Volume</label>
+        <input id="bnGain" type="range" min="0" max="1" step="0.001" value="0.18">
+      </div>
+    </div>
+    <div class="controls">
+      <button id="bnStart" class="primary">Start Binaural</button>
+      <button id="bnStop" class="ghost">Stop Bin
