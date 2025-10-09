@@ -1,200 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="theme-color" content="#0b0d11">
-  <title>Resonance Mode — Sound · Color · Breath</title>
-  <meta name="description" content="No writing — feel the shift: tune a tone with soft start and smooth glide, pick a color and see the complement, hum with Mic Glow, then close with a 1‑minute breath."/>
-  <style>
-    :root{ color-scheme:dark; --bg:#0b0d11; --panel:#11161f; --edge:#1d2430; --ink:#e7edf7; --muted:#a8b3c7; --glow:#66e1ff; --accent:#a4ff65; }
-    *{box-sizing:border-box} html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"SF Pro Text",Segoe UI,Roboto,Helvetica,Arial}
-    .wrap{max-width:980px;margin:0 auto;padding:28px 16px 80px}
-    header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
-    h1{margin:0;font-size:1.5rem}
-    .tag{color:var(--muted);font-size:.96rem}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.07)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px;margin:12px 0}
-    .titleline{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .titleline h3{margin:0;font-size:1.05rem}
-    .huebar{height:6px;border-radius:999px;background:linear-gradient(90deg,#2bc2ff,#a4ff65);opacity:.7}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    label{font-size:.92rem;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
-    input[type=range]{width:220px}
-    button{appearance:none;border:1px solid var(--edge);border-radius:12px;background:#121826;color:var(--ink);padding:9px 12px;cursor:pointer}
-    button:hover{border-color:#2b3545;box-shadow:0 0 0 2px rgba(102,225,255,.12)}
-    .note{font-size:.92rem;color:var(--muted)}
-    .pill{border:1px solid var(--edge);border-radius:999px;padding:6px 10px;font-size:.86rem;color:var(--muted)}
-    .swatch{height:50px;border:1px solid var(--edge);border-radius:12px;min-width:160px}
-    .glow{transition:box-shadow .18s ease, transform .18s ease}
-    .faq details{border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)} .faq details+details{margin-top:8px}
-    .faq summary{cursor:pointer;font-weight:700}
-    :focus-visible{outline:2px solid var(--glow);outline-offset:2px}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#0b0d11">
+<title>Resonance Mode — Sound · Color · Mic Glow · Breath</title>
+<meta name="description" content="No writing — feel the shift: tune a tone (soft start, smooth glide), pick a color + complement, hum with Mic Glow, then close with a moon‑aware 1‑minute breath. Scenes presets, Bridge to Jar, and Venus Flytrap steadying."/>
+<style>
+  :root{ color-scheme:dark; --bg:#0b0d11; --panel:#11161f; --edge:#1d2430; --ink:#e7edf7; --muted:#a8b3c7; --glow:#66e1ff; --accent:#a4ff65; }
+  *{box-sizing:border-box} html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"SF Pro Text",Segoe UI,Roboto,Helvetica,Arial}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 16px 86px}
+  header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
+  h1{margin:0;font-size:1.5rem}
+  .tag{color:var(--muted);font-size:.96rem}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.07)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px;margin:12px 0}
+  .titleline{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .titleline h3{margin:0;font-size:1.05rem}
+  .huebar{height:6px;border-radius:999px;background:linear-gradient(90deg,#2bc2ff,#a4ff65);opacity:.7}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  label{font-size:.92rem;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
+  input[type=range]{width:220px}
+  button{appearance:none;border:1px solid var(--edge);border-radius:12px;background:#121826;color:var(--ink);padding:9px 12px;cursor:pointer}
+  button:hover{border-color:#2b3545;box-shadow:0 0 0 2px rgba(102,225,255,.12)}
+  .note{font-size:.92rem;color:var(--muted)}
+  .pill{border:1px solid var(--edge);border-radius:999px;padding:6px 10px;font-size:.86rem;color:var(--muted)}
+  .swatch{height:50px;border:1px solid var(--edge);border-radius:12px;min-width:160px}
+  .faq details{border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)} .faq details+details{margin-top:8px}
+  .faq summary{cursor:pointer;font-weight:700}
+  .moon{font-size:1.1rem}
+  :focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+</style>
 
-  <!-- JSON-LD: small FAQ -->
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"What does Mic Glow measure?","acceptedAnswer":{"@type":"Answer","text":"A simple steadiness and level indicator to help you hum — no data saved."}},
-    {"@type":"Question","name":"Why show a complement color?","acceptedAnswer":{"@type":"Answer","text":"To give your eye a gentle polarity to explore alongside the tone."}},
-    {"@type":"Question","name":"How do I “log”?","acceptedAnswer":{"@type":"Answer","text":"Open, feel alignment, then close. That’s the log."}}
-  ]}
-  </script>
+<!-- Small FAQ JSON-LD -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do Scenes help?","acceptedAnswer":{"@type":"Answer","text":"They set starting frequency and a color hint to make tuning faster. Adjust by feel."}},
+  {"@type":"Question","name":"What is Flytrap in Resonance?","acceptedAnswer":{"@type":"Answer","text":"A gentle gate linked to Mic Glow steadiness—if your hum wobbles, volume dips briefly and opens again as you steady."}},
+  {"@type":"Question","name":"Where do I get help?","acceptedAnswer":{"@type":"Answer","text":"Use Notes · FAQs here, or the Support · FAQs on Froot. Everything runs locally."}}
+]}
+</script>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Resonance Mode</h1>
-        <div class="tag">No writing · Feel the shift — tune, see, hum, breathe.</div>
-      </div>
-      <div class="controls">
-        <a class="pill" href="/" rel="noopener">← Sine</a>
-        <a class="pill" href="#faqs">Notes · FAQs</a>
-      </div>
-    </header>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Resonance Mode</h1>
+      <div class="tag">No writing · Feel the shift — tune, see, hum, breathe. Scenes · Moon · Bridge.</div>
+    </div>
+    <div class="controls">
+      <button type="button" id="bridgeOpen">🌉 Bridge</button>
+      <a class="pill" href="/">← Sine</a>
+      <a class="pill" href="#faqs">Help</a>
+    </div>
+  </header>
 
-    <!-- Sound -->
-    <section class="card" id="sound">
-      <div class="titleline"><h3>Sound · Tune your field</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="controls">
-        <label>Tone <select id="snd-state"><option>Off</option><option selected>On</option></select></label>
-        <label>Hz <input id="snd-hz" type="number" min="55" max="880" step="0.1" value="220"></label>
-        <input id="snd-hz-range" type="range" min="55" max="880" step="0.1" value="220" aria-label="Frequency slider">
-        <label><input id="snd-soft" type="checkbox" checked> Soft start</label>
-        <label><input id="snd-glide" type="checkbox" checked> Smooth glide</label>
-        <label>Volume <input id="snd-vol" type="range" min="0" max="100" value="20"></label>
-      </div>
-      <p class="note">Touch the slider and hum to match. (Headphones are gentler.)</p>
-    </section>
+  <section class="card">
+    <div class="titleline"><h3>Intro — be the bridge</h3><div class="huebar" aria-hidden="true"></div></div>
+    <p><b>Resonance</b> is for feeling alignment: a tone with soft start/glide, a color with its complement, your voice steadying the light. When the feeling lands, tap <b>Bridge</b> to open <b>Jar</b>—School (guides) or Rooms (prompts)—and give it language. Audio stops as we cross. Honey lives here as warmth; MirrorHoney is on Sine.</p>
+  </section>
 
-    <!-- Color -->
-    <section class="card" id="color">
-      <div class="titleline"><h3>Color · Pick &amp; see the complement</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="controls">
-        <label>Color <input id="clr" type="color" value="#ffd86b"></label>
-        <div class="swatch" id="clr-swatch" style="background:#ffd86b" aria-label="Selected color"></div>
-        <span class="pill">Complement <b id="clr-comp">#2b49ff</b></span>
-        <span class="pill">Hue <b id="clr-hue">48°</b></span>
-      </div>
-    </section>
+  <!-- Scenes + Moon -->
+  <section class="card" id="scenes">
+    <div class="titleline"><h3>Scenes &amp; Moon rhythm</h3><div class="huebar" aria-hidden="true"></div></div>
+    <div class="controls">
+      <label>Scene
+        <select id="scene">
+          <option value="custom">— Choose a Scene —</option>
+          <option>Hayley</option><option>Swift</option><option>Marina</option><option>Sabrina</option><option>Ariana + Dua</option><option>Doechii</option>
+        </select>
+      </label>
+      <span class="pill">Moon <span id="moonEmoji" class="moon">🌘</span> <b id="moonName">Waning</b></span>
+      <label>Breath
+        <select id="moonMode">
+          <option value="auto">Auto (Moon today)</option>
+          <option value="new">New · 4–4–4</option>
+          <option value="waxing">Waxing · 4–5–6</option>
+          <option value="full">Full · 4–7–8</option>
+          <option value="waning">Waning · 4–6–6</option>
+          <option value="custom">Custom</option>
+        </select>
+      </label>
+    </div>
+  </section>
 
-    <!-- Mic Glow -->
-    <section class="card" id="mic">
-      <div class="titleline"><h3>Mic Glow · Hold a steady hum</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="controls">
-        <label>Mic <select id="mic-state"><option>Off</option><option>On</option></select></label>
-        <span class="pill">Steadiness: <b id="mic-steady">0%</b></span>
-        <span class="pill">Level: <b id="mic-level">–∞ dB</b></span>
-      </div>
-      <p class="note">If the percentage climbs and the card glows, your hum is steady. <b>No data saved.</b></p>
-    </section>
+  <!-- Sound -->
+  <section class="card" id="sound">
+    <div class="titleline"><h3>Sound · Tune your field</h3><div class="huebar" aria-hidden="true"></div></div>
+    <div class="controls">
+      <label>Tone <select id="snd-state"><option>Off</option><option selected>On</option></select></label>
+      <label>Hz <input id="snd-hz" type="number" min="55" max="880" step="0.1" value="220"></label>
+      <input id="snd-hz-range" type="range" min="55" max="880" step="0.1" value="220" aria-label="Frequency slider">
+      <label><input id="snd-soft" type="checkbox" checked> Soft start</label>
+      <label><input id="snd-glide" type="checkbox" checked> Smooth glide</label>
+      <label>Vol <input id="snd-vol" type="range" min="0" max="100" value="20"></label>
+      <label class="pill"><input id="snd-flytrap" type="checkbox"> 🪴 Flytrap (steady hum)</label>
+    </div>
+    <p class="note">Headphones are gentle. Flytrap dips the volume briefly when steadiness falls, then re‑opens as you settle.</p>
+  </section>
 
-    <!-- Breath -->
-    <section class="card" id="breath">
-      <div class="titleline"><h3>Breath · One-minute reset</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="controls">
-        <button type="button" id="br-start">Start</button>
-        <button type="button" id="br-stop">Stop</button>
-        <span class="pill">Pattern: <b id="br-pattern">4 • 4 • 4</b></span>
-        <label>In (s) <input id="br-in" type="number" min="1" max="20" value="4"></label>
-        <label>Hold (s) <input id="br-hold" type="number" min="0" max="20" value="4"></label>
-        <label>Out (s) <input id="br-out" type="number" min="1" max="30" value="4"></label>
-      </div>
-      <p class="note">Open the page, feel alignment, then close it. That’s the “log.”</p>
-    </section>
+  <!-- Color -->
+  <section class="card" id="color">
+    <div class="titleline"><h3>Color · Complement</h3><div class="huebar" aria-hidden="true"></div></div>
+    <div class="controls">
+      <label>Color <input id="clr" type="color" value="#ffd86b"></label>
+      <div class="swatch" id="clr-swatch" style="background:#ffd86b" aria-label="Selected color"></div>
+      <span class="pill">Complement <b id="clr-comp">#2b49ff</b></span>
+      <span class="pill">Hue <b id="clr-hue">48°</b></span>
+    </div>
+  </section>
 
-    <!-- FAQs -->
-    <section class="card faq" id="faqs">
-      <div class="titleline"><h3>Notes · FAQs</h3><div class="huebar" aria-hidden="true"></div></div>
-      <details><summary>What does Mic Glow measure?</summary><p>Only steadiness and level to help your hum; nothing is saved or uploaded.</p></details>
-      <details><summary>Why the complement color?</summary><p>It gives your eye a gentle polarity to explore alongside the tone.</p></details>
-      <details><summary>Is this a medical tool?</summary><p>No — it’s a reflective practice. If anything feels uncomfortable, reduce volume or stop and rest in silence.</p></details>
-    </section>
+  <!-- Mic Glow -->
+  <section class="card" id="mic">
+    <div class="titleline"><h3>Mic Glow · Hold a steady hum</h3><div class="huebar" aria-hidden="true"></div></div>
+    <div class="controls">
+      <label>Mic <select id="mic-state"><option>Off</option><option>On</option></select></label>
+      <span class="pill">Steadiness: <b id="mic-steady">0%</b></span>
+      <span class="pill">Level: <b id="mic-level">–∞ dB</b></span>
+    </div>
+    <p class="note">If the percentage climbs and the card glows, your hum is steady. <b>No data saved.</b></p>
+  </section>
 
-    <footer class="note">Be kind to your ears. Headphones recommended. If in doubt, lower the volume and rest.</footer>
+  <!-- Breath 1‑minute -->
+  <section class="card" id="breath">
+    <div class="titleline"><h3>Breath · One‑minute reset</h3><div class="huebar" aria-hidden="true"></div></div>
+    <div class="controls">
+      <button type="button" id="br-start">Start</button>
+      <button type="button" id="br-stop">Stop</button>
+      <span class="pill">Pattern: <b id="br-pattern">4 • 4 • 4</b></span>
+      <label>In <input id="br-in" type="number" min="1" max="20" value="4"></label>
+      <label>Hold <input id="br-hold" type="number" min="0" max="20" value="4"></label>
+      <label>Out <input id="br-out" type="number" min="1" max="30" value="4"></label>
+    </div>
+    <p class="note">Open, feel alignment, then close. That’s the log.</p>
+  </section>
+
+  <!-- FAQs -->
+  <section class="card faq" id="faqs">
+    <div class="titleline"><h3>Notes · FAQs</h3><div class="huebar" aria-hidden="true"></div></div>
+    <details><summary>Bridge to Jar?</summary><p>Jar holds School (guides) and Rooms (prompts). Tap <b>Bridge</b> when you want language—your audio stops as we cross.</p></details>
+    <details><summary>Mic Glow &amp; privacy</summary><p>We show steadiness/level locally, nothing is uploaded or saved.</p></details>
+    <details><summary>Flytrap (Resonance)</summary><p>When your hum wobbles (steadiness down), volume dips briefly. Settle your tone and it opens again.</p></details>
+  </section>
+
+  <footer class="note">Be kind to your ears. If in doubt, lower the volume and rest.</footer>
+</div>
+
+<!-- Bridge modal -->
+<div id="bridgeModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,12,16,.55);backdrop-filter:blur(6px);z-index:9999">
+  <div style="width:min(520px,92vw);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.08))">
+    <h3 style="margin:0 0 6px">Liminal Bridge</h3>
+    <p style="color:#a8b3c7;margin:6px 0 12px">Practice → words: choose where to land in Jar.</p>
+    <div class="controls">
+      <button type="button" id="toSchool">↩ Jar · School</button>
+      <button type="button" id="toRooms">↩ Jar · Rooms</button>
+      <button type="button" id="toEgg">↩ Egg Map</button>
+      <button type="button" id="bridgeClose" style="margin-left:auto">Stay here</button>
+    </div>
   </div>
+</div>
 
-  <script>
-  // ---------- Audio ----------
-  let ctx, master, comp, sndOsc=null, sndGain=null;
-  function ensureCtx(){ if(!ctx){ ctx=new (window.AudioContext||window.webkitAudioContext)({latencyHint:"interactive"}); master=ctx.createGain(); master.gain.value=.85; comp=ctx.createDynamicsCompressor(); comp.threshold.value=-18; comp.knee.value=12; comp.ratio.value=2; comp.attack.value=.01; comp.release.value=.3; master.connect(comp); comp.connect(ctx.destination); document.addEventListener('click', ()=>ctx.resume(), {once:true}); } }
-  function ramp(param, val, t=.15){ const now=ctx.currentTime; param.cancelScheduledValues(now); param.setValueAtTime(param.value, now); param.linearRampToValueAtTime(val, now+t); }
+<script>
+/* ---------- Bridge helper ---------- */
+function jarBaseURL(){
+  var h=location.hostname;
+  if(h==='localhost'||h==='127.0.0.1') return '';
+  var p=h.split('.'); if(p.length>=2){ p[0]='jar'; return location.protocol+'//'+p.join('.'); }
+  return '';
+}
+const bridgeModal=document.getElementById('bridgeModal');
+document.getElementById('bridgeOpen').onclick=()=>{ try{ stopSound(); }catch(_){ } bridgeModal.style.display='flex'; };
+document.getElementById('bridgeClose').onclick=()=>bridgeModal.style.display='none';
+document.getElementById('toSchool').onclick=()=>location.assign((jarBaseURL()||'')+'/school.html');
+document.getElementById('toRooms').onclick=()=>location.assign((jarBaseURL()||'')+'/school-rooms.html');
+document.getElementById('toEgg').onclick=()=>location.assign((jarBaseURL()||'')+'/marina-egg.html');
 
-  // Sound controls
-  const sndState=document.getElementById('snd-state'), sndHz=document.getElementById('snd-hz'), sndHzR=document.getElementById('snd-hz-range'), sndSoft=document.getElementById('snd-soft'), sndGlide=document.getElementById('snd-glide'), sndVol=document.getElementById('snd-vol');
-  function sndSync(v){ sndHz.value=v; sndHzR.value=v; if(sndOsc && sndGlide.checked) ramp(sndOsc.frequency, Number(v)||220, .12); else if(sndOsc) sndOsc.frequency.value=Number(v)||220; }
-  sndHz.oninput=e=>sndSync(e.target.value); sndHzR.oninput=e=>sndSync(e.target.value);
-  sndVol.oninput=e=>{ if(sndGain){ const g=(Number(e.target.value)||0)/100*0.30; if(sndSoft.checked) ramp(sndGain.gain,g,.06); else sndGain.gain.value=g; } };
-  sndState.onchange=()=>{
-    if(sndState.value==='On'){ ensureCtx(); if(sndOsc) return; sndOsc=ctx.createOscillator(); sndGain=ctx.createGain(); sndOsc.type='sine'; sndOsc.frequency.value=Number(sndHz.value)||220; sndGain.gain.value=0; sndOsc.connect(sndGain); sndGain.connect(master); sndOsc.start(); const g=(Number(sndVol.value)||0)/100*0.30; sndSoft.checked? ramp(sndGain.gain,g,.18): sndGain.gain.value=g; }
-    else { if(!sndOsc) return; sndSoft.checked? ramp(sndGain.gain,0.0005,.18):sndGain.gain.value=0.0005; setTimeout(()=>{ try{sndOsc.stop()}catch(_){ } sndOsc.disconnect(); sndGain.disconnect(); sndOsc=null; sndGain=null; }, 200); }
-  };
+/* ---------- Audio base ---------- */
+let ctx, master, comp;
+function ensureCtx(){ if(!ctx){ ctx=new (window.AudioContext||window.webkitAudioContext)({latencyHint:"interactive"}); master=ctx.createGain(); master.gain.value=.85; comp=ctx.createDynamicsCompressor(); comp.threshold.value=-18; comp.knee.value=12; comp.ratio.value=2; comp.attack.value=.01; comp.release.value=.3; master.connect(comp); comp.connect(ctx.destination); document.addEventListener('click', ()=>ctx.resume(), {once:true}); } }
+function ramp(p,v,t=.15){ const now=ctx.currentTime; p.cancelScheduledValues(now); p.setValueAtTime(p.value, now); p.linearRampToValueAtTime(v, now+t); }
 
-  // ---------- Color ----------
-  const clr=document.getElementById('clr'), compTxt=document.getElementById('clr-comp'), hueTxt=document.getElementById('clr-hue'), sw=document.getElementById('clr-swatch');
-  function hexToHSL(hex){ hex=hex.replace('#',''); if(hex.length===3){ hex=hex.split('').map(s=>s+s).join(''); } const r=parseInt(hex.substr(0,2),16)/255, g=parseInt(hex.substr(2,2),16)/255, b=parseInt(hex.substr(4,2),16)/255; const max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2; if(max===min){ h=s=0; } else { const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min); switch(max){ case r:h=(g-b)/d+(g<b?6:0);break; case g:h=(b-r)/d+2;break; case b:h=(r-g)/d+4;break; } h/=6; } return {h:Math.round(h*360), s, l}; }
-  function hslToHex(h,s,l){ h/=360; let r,g,b; if(s===0){ r=g=b=l; } else { const hue2rgb=(p,q,t)=>{ if(t<0) t+=1; if(t>1) t-=1; if(t<1/6) return p+(q-p)*6*t; if(t<1/2) return q; if(t<2/3) return p+(q-p)*(2/3 - t)*6; return p; }; const q=l<.5? l*(1+s): l+s-l*s; const p=2*l-q; r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3); } const toHex=v=>('0'+Math.round(v*255).toString(16)).slice(-2); return '#'+toHex(r)+toHex(g)+toHex(b); }
-  function updateColor(){
-    const hsl=hexToHSL(clr.value); hueTxt.textContent=hsl.h+'°'; sw.style.background=clr.value;
-    let comp=(hsl.h+180)%360; const compHex=hslToHex(comp, hsl.s, hsl.l); compTxt.textContent=compHex;
+/* ---------- Moon phase ---------- */
+function moonPhaseInfo(d=new Date()){
+  const lp=2551443; const new_moon=new Date(Date.UTC(2000,0,6,18,14));
+  const phase=((d-new_moon)/1000)%lp; const age=phase/(24*3600); const frac=age/29.530588; const f=(frac+1)%1;
+  let name='Waxing', emoji='🌔';
+  if(f<0.03||f>0.97){ name='New'; emoji='🌑'; } else if(f<0.21){ name='Waxing'; emoji='🌒'; }
+  else if(f<0.29){ name='First Quarter'; emoji='🌓'; } else if(f<0.46){ name='Waxing'; emoji='🌔'; }
+  else if(f<0.54){ name='Full'; emoji='🌕'; } else if(f<0.71){ name='Waning'; emoji='🌖'; }
+  else if(f<0.79){ name='Last Quarter'; emoji='🌗'; } else { name='Waning'; emoji='🌘'; }
+  return {name, emoji};
+}
+function applyMoonBreath(){
+  const mode=document.getElementById('moonMode').value;
+  const info=moonPhaseInfo();
+  document.getElementById('moonEmoji').textContent=info.emoji;
+  document.getElementById('moonName').textContent=info.name;
+  let i=4,h=4,o=4;
+  if(mode==='auto'){
+    if(info.name==='New'){ i=4;h=4;o=4; }
+    else if(info.name==='Full'){ i=4;h=7;o=8; }
+    else if(info.name==='Waning'){ i=4;h=6;o=6; }
+    else { i=4;h=5;o=6; } // Waxing / quarters
+  }else if(mode==='new'){ i=4;h=4;o=4; }
+  else if(mode==='waxing'){ i=4;h=5;o=6; }
+  else if(mode==='full'){ i=4;h=7;o=8; }
+  else if(mode==='waning'){ i=4;h=6;o=6; }
+  if(mode!=='custom'){
+    brIn.value=i; brHold.value=h; brOut.value=o; setPattern();
   }
-  clr.oninput=updateColor; updateColor();
+}
 
-  // ---------- Mic Glow ----------
-  const micState=document.getElementById('mic-state'), micSteady=document.getElementById('mic-steady'), micLevel=document.getElementById('mic-level');
-  const micCard=document.getElementById('mic');
-  let media=null, micSrc=null, analyser=null, raf=0; const buf=new Uint8Array(512); const smooth=(n, p=.2)=>n*p+smooth.last*(1-p); smooth.last=0;
-  function dbFrom(v){ return v<=1e-8 ? -96 : (20*Math.log10(v)); }
-  function sampleMic(){
-    analyser.getByteTimeDomainData(buf);
-    // RMS level
-    let sum=0; for(let i=0;i<buf.length;i++){ const x=(buf[i]-128)/128; sum+=x*x; }
-    const rms=Math.sqrt(sum/buf.length); const db=Math.max(-60, Math.min(0, dbFrom(rms)));
-    smooth.last = smooth(db);
-    // steadiness: 100 when db variance across window is low
-    const mean=rms; let varsum=0; for(let i=0;i<buf.length;i++){ const x=(buf[i]-128)/128; varsum += Math.pow(Math.abs(x)-mean,2); }
-    const variance = varsum/buf.length;
-    const steady = Math.max(0, Math.min(100, Math.round(100*(1 - variance*12))));
-    micSteady.textContent = steady + '%';
-    micLevel.textContent  = (db|0) + ' dB';
-    // glow
-    const glow = steady/100;
-    micCard.style.boxShadow = `0 10px 30px rgba(164,255,101,${0.15+glow*0.25})`;
-    micCard.classList.add('glow');
-    raf = requestAnimationFrame(sampleMic);
-  }
-  async function micOn(){
-    ensureCtx();
-    if(media) return;
-    try{
-      media = await navigator.mediaDevices.getUserMedia({audio:true, video:false});
-      const micCtx = ctx.createMediaStreamSource(media);
-      analyser = ctx.createAnalyser(); analyser.fftSize = 1024;
-      micCtx.connect(analyser); micSrc = micCtx;
-      sampleMic();
-    }catch(e){ micState.value='Off'; alert('Mic permission denied.'); }
-  }
-  function micOff(){
-    cancelAnimationFrame(raf); raf=0; if(media){ media.getTracks().forEach(t=>t.stop()); media=null; } if(micSrc){ micSrc.disconnect(); micSrc=null; } if(analyser){ analyser.disconnect(); analyser=null; }
-    micCard.style.boxShadow='none'; micSteady.textContent='0%'; micLevel.textContent='–∞ dB';
-  }
-  micState.onchange=()=>{ micState.value==='On' ? micOn() : micOff(); };
+/* ---------- Scenes ---------- */
+const scenes={
+  "Hayley":{ hz:220, color:"#7dd3fc" },
+  "Swift": { hz:329.63, color:"#ffd1e8" },
+  "Marina":{ hz:349.23, color:"#ffd86b" },
+  "Sabrina":{ hz:554.37, color:"#b5ff8a" },
+  "Ariana + Dua":{ hz:587.33, color:"#a8c7ff" },
+  "Doechii":{ hz:150, color:"#ffb36b" }
+};
+document.getElementById('scene').onchange=(e)=>{
+  const v=e.target.value; if(!scenes[v]) return;
+  sndHz.value=scenes[v].hz; sndHzR.value=scenes[v].hz; if(sndOsc){ if(sndGlide.checked) ramp(sndOsc.frequency, scenes[v].hz, .12); else sndOsc.frequency.value=scenes[v].hz; }
+  clr.value=scenes[v].color; updateColor();
+};
 
-  // ---------- Breath 1‑minute ----------
-  const brStart=document.getElementById('br-start'), brStop=document.getElementById('br-stop'), brIn=document.getElementById('br-in'), brHold=document.getElementById('br-hold'), brOut=document.getElementById('br-out'), brPattern=document.getElementById('br-pattern');
-  let brTid=0, brOn=false, brPhase=0;
-  function setPattern(){ brPattern.textContent = (parseInt(brIn.value,10)||4)+' • '+(parseInt(brHold.value,10)||4)+' • '+(parseInt(brOut.value,10)||4); }
-  setPattern(); brIn.oninput=setPattern; brHold.oninput=setPattern; brOut.oninput=setPattern;
-  function stepBreath(){
-    if(!brOn) return;
-    const phases=['IN','HOLD','OUT']; const dur=[(parseInt(brIn.value,10)||4),(parseInt(brHold.value,10)||4),(parseInt(brOut.value,10)||4)];
-    const label=phases[brPhase%3]; const secs=dur[brPhase%3];
-    brPhase++; brStart.textContent = label; brStart.classList.add('big'); brStart.style.letterSpacing='.12em';
-    brTid=setTimeout(stepBreath, Math.max(1,secs)*1000);
+/* ---------- Sound ---------- */
+let sndOsc=null, sndGain=null;
+const sndState=document.getElementById('snd-state'), sndHz=document.getElementById('snd-hz'), sndHzR=document.getElementById('snd-hz-range'), sndSoft=document.getElementById('snd-soft'), sndGlide=document.getElementById('snd-glide'), sndVol=document.getElementById('snd-vol'), sndTrap=document.getElementById('snd-flytrap');
+function sndSync(v){ sndHz.value=v; sndHzR.value=v; if(sndOsc && sndGlide.checked) ramp(sndOsc.frequency, Number(v)||220, .12); else if(sndOsc) sndOsc.frequency.value=Number(v)||220; }
+sndHz.oninput=e=>sndSync(e.target.value); sndHzR.oninput=e=>sndSync(e.target.value);
+sndVol.oninput=e=>{ if(sndGain){ const g=(Number(e.target.value)||0)/100*0.30; if(sndSoft.checked) ramp(sndGain.gain,g,.06); else sndGain.gain.value=g; } };
+sndState.onchange=()=>{
+  if(sndState.value==='On'){
+    ensureCtx(); if(sndOsc) return; sndOsc=ctx.createOscillator(); sndGain=ctx.createGain();
+    sndOsc.type='sine'; sndOsc.frequency.value=Number(sndHz.value)||220; sndGain.gain.value=0; sndOsc.connect(sndGain); sndGain.connect(master); sndOsc.start();
+    const g=(Number(sndVol.value)||0)/100*0.30; sndSoft.checked? ramp(sndGain.gain,g,.18) : sndGain.gain.value=g;
+  }else{ stopSound(); }
+};
+function stopSound(){
+  if(!sndOsc) return;
+  sndSoft.checked? ramp(sndGain.gain,0.0005,.18): sndGain.gain.value=0.0005;
+  setTimeout(()=>{ try{sndOsc.stop()}catch(_){ } sndOsc.disconnect(); sndGain.disconnect(); sndOsc=null; sndGain=null; },200);
+}
+
+/* ---------- Color ---------- */
+const clr=document.getElementById('clr'), compTxt=document.getElementById('clr-comp'), hueTxt=document.getElementById('clr-hue'), sw=document.getElementById('clr-swatch');
+function hexToHSL(hex){ hex=hex.replace('#',''); if(hex.length===3){ hex=hex.split('').map(s=>s+s).join(''); } const r=parseInt(hex.substr(0,2),16)/255, g=parseInt(hex.substr(2,2),16)/255, b=parseInt(hex.substr(4,2),16)/255; const max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2; if(max===min){ h=s=0; } else { const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min); switch(max){ case r:h=(g-b)/d+(g<b?6:0);break; case g:h=(b-r)/d+2;break; case b:h=(r-g)/d+4;break; } h/=6; } return {h:Math.round(h*360), s, l}; }
+function hslToHex(h,s,l){ h/=360; let r,g,b; if(s===0){ r=g=b=l; } else { const hue2rgb=(p,q,t)=>{ if(t<0) t+=1; if(t>1) t-=1; if(t<1/6) return p+(q-p)*6*t; if(t<1/2) return q; if(t<2/3) return p+(q-p)*(2/3 - t)*6; return p; }; const q=l<.5? l*(1+s): l+s-l*s; const p=2*l-q; r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3); } const toHex=v=>('0'+Math.round(v*255).toString(16)).slice(-2); return '#'+toHex(r)+toHex(g)+toHex(b); }
+function updateColor(){
+  const hsl=hexToHSL(clr.value); hueTxt.textContent=hsl.h+'°'; sw.style.background=clr.value;
+  const comp=(hsl.h+180)%360; const compHex=hslToHex(comp, hsl.s, hsl.l); compTxt.textContent=compHex;
+}
+clr.oninput=updateColor; updateColor();
+
+/* ---------- Mic Glow & Flytrap ---------- */
+const micState=document.getElementById('mic-state'), micSteady=document.getElementById('mic-steady'), micLevel=document.getElementById('mic-level');
+const micCard=document.getElementById('mic');
+let media=null, micSrc=null, analyser=null, raf=0; const buf=new Uint8Array(512);
+let trapOn=false, trapCooldown=0;
+function dbFrom(v){ return v<=1e-8 ? -96 : (20*Math.log10(v)); }
+function sampleMic(){
+  analyser.getByteTimeDomainData(buf);
+  let sum=0; for(let i=0;i<buf.length;i++){ const x=(buf[i]-128)/128; sum+=x*x; }
+  const rms=Math.sqrt(sum/buf.length); const db=Math.max(-60, Math.min(0, dbFrom(rms)));
+  // steadiness
+  const mean=rms; let varsum=0; for(let i=0;i<buf.length;i++){ const x=(buf[i]-128)/128; varsum+=Math.pow(Math.abs(x)-mean,2); }
+  const variance=varsum/buf.length;
+  const steady=Math.max(0, Math.min(100, Math.round(100*(1 - variance*12))));
+  micSteady.textContent=steady+'%'; micLevel.textContent=(db|0)+' dB';
+  // glow
+  const glow=steady/100; micCard.style.boxShadow=`0 10px 30px rgba(164,255,101,${0.12+glow*0.28})`;
+  // Flytrap linked to steadiness
+  if(sndGain && document.getElementById('snd-flytrap').checked){
+    const now=performance.now();
+    if(steady<35 && now>trapCooldown){
+      // dip for 180ms
+      const base=(Number(document.getElementById('snd-vol').value)||0)/100*0.30;
+      const t=ctx.currentTime;
+      sndGain.gain.cancelScheduledValues(t);
+      sndGain.gain.setValueAtTime(sndGain.gain.value, t);
+      sndGain.gain.linearRampToValueAtTime(base*0.35, t+0.08);
+      sndGain.gain.linearRampToValueAtTime(base, t+0.22);
+      trapCooldown=now+900; // cooldown
+    }
   }
-  brStart.onclick=()=>{ brOn=true; brPhase=0; stepBreath(); };
-  brStop.onclick =()=>{ brOn=false; clearTimeout(brTid); brStart.textContent='Start'; brStart.classList.remove('big'); };
-  </script>
+  raf=requestAnimationFrame(sampleMic);
+}
+async function micOn(){
+  ensureCtx();
+  if(media) return;
+  try{
+    media=await navigator.mediaDevices.getUserMedia({audio:true, video:false});
+    const micCtx=ctx.createMediaStreamSource(media); analyser=ctx.createAnalyser(); analyser.fftSize=1024; micCtx.connect(analyser); micSrc=micCtx; sampleMic();
+  }catch(e){ micState.value='Off'; alert('Mic permission denied.'); }
+}
+function micOff(){
+  cancelAnimationFrame(raf); raf=0; if(media){ media.getTracks().forEach(t=>t.stop()); media=null; }
+  if(micSrc){ micSrc.disconnect(); micSrc=null; } if(analyser){ analyser.disconnect(); analyser=null; }
+  micCard.style.boxShadow='none'; micSteady.textContent='0%'; micLevel.textContent='–∞ dB';
+}
+micState.onchange=()=>{ micState.value==='On'? micOn() : micOff(); };
+
+/* ---------- Breath 1‑minute ---------- */
+const brStart=document.getElementById('br-start'), brStop=document.getElementById('br-stop'), brIn=document.getElementById('br-in'), brHold=document.getElementById('br-hold'), brOut=document.getElementById('br-out'), brPattern=document.getElementById('br-pattern');
+let brTid=0, brOn=false, brPhase=0;
+function setPattern(){ brPattern.textContent=(parseInt(brIn.value,10)||4)+' • '+(parseInt(brHold.value,10)||4)+' • '+(parseInt(brOut.value,10)||4); }
+setPattern(); brIn.oninput=setPattern; brHold.oninput=setPattern; brOut.oninput=setPattern;
+function stepBreath(){
+  if(!brOn) return;
+  const phases=['IN','HOLD','OUT']; const dur=[(parseInt(brIn.value,10)||4),(parseInt(brHold.value,10)||4),(parseInt(brOut.value,10)||4)];
+  const label=phases[brPhase%3]; const secs=dur[brPhase%3];
+  brPhase++; brStart.textContent=label; brStart.style.letterSpacing='.12em'; brStart.style.fontWeight='800';
+  brTid=setTimeout(stepBreath, Math.max(1,secs)*1000);
+}
+brStart.onclick=()=>{ brOn=true; brPhase=0; stepBreath(); };
+brStop.onclick =()=>{ brOn=false; clearTimeout(brTid); brStart.textContent='Start'; brStart.style.letterSpacing=''; brStart.style.fontWeight=''; };
+
+/* init moon */
+document.getElementById('moonMode').onchange=applyMoonBreath; applyMoonBreath();
+</script>
 </body>
 </html>
