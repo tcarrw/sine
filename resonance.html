@@ -1,55 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="theme-color" content="#0b0d11">
-  <title>Sine — Calm & Breath</title>
-  <meta name="description" content="Gentle tones for relaxation, focus, and breath pacing. Headphones recommended for binaural mode." />
+  <title>Resonance Mode — Sound · Color · Breath</title>
+  <meta name="description" content="No writing — feel the shift: tune a tone with soft start and smooth glide, pick a color and see the complement, hum with Mic Glow, then close with a 1‑minute breath."/>
   <style>
-    :root{
-      color-scheme: dark;
-      --bg:#0b0d11; --panel:#11161f; --edge:#1d2430; --ink:#e7edf7; --muted:#a8b3c7; --glow:#66e1ff;
-      --green:#a4ff65; --blue:#86c9ff; --violet:#b38bff;
-    }
-    *{box-sizing:border-box} html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif, system-ui, -apple-system, "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial}
+    :root{ color-scheme:dark; --bg:#0b0d11; --panel:#11161f; --edge:#1d2430; --ink:#e7edf7; --muted:#a8b3c7; --glow:#66e1ff; --accent:#a4ff65; }
+    *{box-sizing:border-box} html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"SF Pro Text",Segoe UI,Roboto,Helvetica,Arial}
     .wrap{max-width:980px;margin:0 auto;padding:28px 16px 80px}
     header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
-    h1{margin:0;font-size:1.5rem;letter-spacing:.2px}
+    h1{margin:0;font-size:1.5rem}
     .tag{color:var(--muted);font-size:.96rem}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.07)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.07)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px;margin:12px 0}
     .titleline{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
     .titleline h3{margin:0;font-size:1.05rem}
     .huebar{height:6px;border-radius:999px;background:linear-gradient(90deg,#2bc2ff,#a4ff65);opacity:.7}
-    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     label{font-size:.92rem;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
     input[type=range]{width:220px}
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     button{appearance:none;border:1px solid var(--edge);border-radius:12px;background:#121826;color:var(--ink);padding:9px 12px;cursor:pointer}
     button:hover{border-color:#2b3545;box-shadow:0 0 0 2px rgba(102,225,255,.12)}
-    .pill{border:1px solid var(--edge);border-radius:999px;padding:6px 10px;font-size:.86rem;color:var(--muted)}
     .note{font-size:.92rem;color:var(--muted)}
-    .meter{height:10px;border-radius:999px;background:#0e1320;border:1px solid var(--edge);overflow:hidden;min-width:180px}
-    .meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg, #2bc2ff, #a4ff65)}
-    .big{font-weight:800;letter-spacing:.08em}
-    .state{font-variant-caps:all-small-caps;letter-spacing:.14em;opacity:.95}
-    .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    hr{border:none;height:1px;background:linear-gradient(90deg,transparent,#232b36,transparent);margin:12px 0}
-    .faq details{border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)}
-    .faq details+details{margin-top:8px}
+    .pill{border:1px solid var(--edge);border-radius:999px;padding:6px 10px;font-size:.86rem;color:var(--muted)}
+    .swatch{height:50px;border:1px solid var(--edge);border-radius:12px;min-width:160px}
+    .glow{transition:box-shadow .18s ease, transform .18s ease}
+    .faq details{border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)} .faq details+details{margin-top:8px}
     .faq summary{cursor:pointer;font-weight:700}
     :focus-visible{outline:2px solid var(--glow);outline-offset:2px}
-    @media (prefers-reduced-motion:reduce){ .pulse{animation:none} }
   </style>
 
-  <!-- JSON-LD: small FAQ for rich results -->
+  <!-- JSON-LD: small FAQ -->
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"Do I need headphones?","acceptedAnswer":{"@type":"Answer","text":"Recommended for binaural mode; optional for single tones."}},
-    {"@type":"Question","name":"Is there a safe volume?","acceptedAnswer":{"@type":"Answer","text":"Keep volume moderate; if you feel dizzy, anxious, or uncomfortable, stop and rest in silence."}},
-    {"@type":"Question","name":"What frequencies feel good to start with?","acceptedAnswer":{"@type":"Answer","text":"Many people like 128–150 Hz for chest-centered warmth and ~220 Hz for a voice-like feel. Follow comfort, not rules."}}
+    {"@type":"Question","name":"What does Mic Glow measure?","acceptedAnswer":{"@type":"Answer","text":"A simple steadiness and level indicator to help you hum — no data saved."}},
+    {"@type":"Question","name":"Why show a complement color?","acceptedAnswer":{"@type":"Answer","text":"To give your eye a gentle polarity to explore alongside the tone."}},
+    {"@type":"Question","name":"How do I “log”?","acceptedAnswer":{"@type":"Answer","text":"Open, feel alignment, then close. That’s the log."}}
   ]}
   </script>
 </head>
@@ -57,215 +45,156 @@
   <div class="wrap">
     <header>
       <div>
-        <h1>Sine — Calm &amp; Breath</h1>
-        <div class="tag">Gentle tones for relaxation, focus, and breath pacing. <b>Headphones</b> recommended for binaural.</div>
+        <h1>Resonance Mode</h1>
+        <div class="tag">No writing · Feel the shift — tune, see, hum, breathe.</div>
       </div>
-      <div class="flex">
-        <a class="pill" href="/resonance.html" rel="noopener">Resonance Mode →</a>
+      <div class="controls">
+        <a class="pill" href="/" rel="noopener">← Sine</a>
         <a class="pill" href="#faqs">Notes · FAQs</a>
       </div>
     </header>
 
-    <!-- Breath Pacer -->
-    <section class="card" id="pacer">
-      <div class="titleline"><h3>Breath Pacer</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="row">
-        <div class="controls">
-          <label>Inhale (s) <input id="bp-in" type="number" min="1" max="20" step="1" value="4"></label>
-          <label>Exhale (s) <input id="bp-out" type="number" min="1" max="30" step="1" value="6"></label>
-          <span class="pill state" id="bp-state">IDLE</span>
-          <button type="button" id="bp-start">Start Pacer</button>
-          <button type="button" id="bp-stop">Stop Pacer</button>
-        </div>
-        <div class="note">A subtle cue flashes on each phase change; optional click tone is ultra‑low volume.</div>
+    <!-- Sound -->
+    <section class="card" id="sound">
+      <div class="titleline"><h3>Sound · Tune your field</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="controls">
+        <label>Tone <select id="snd-state"><option>Off</option><option selected>On</option></select></label>
+        <label>Hz <input id="snd-hz" type="number" min="55" max="880" step="0.1" value="220"></label>
+        <input id="snd-hz-range" type="range" min="55" max="880" step="0.1" value="220" aria-label="Frequency slider">
+        <label><input id="snd-soft" type="checkbox" checked> Soft start</label>
+        <label><input id="snd-glide" type="checkbox" checked> Smooth glide</label>
+        <label>Volume <input id="snd-vol" type="range" min="0" max="100" value="20"></label>
+      </div>
+      <p class="note">Touch the slider and hum to match. (Headphones are gentler.)</p>
+    </section>
+
+    <!-- Color -->
+    <section class="card" id="color">
+      <div class="titleline"><h3>Color · Pick &amp; see the complement</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="controls">
+        <label>Color <input id="clr" type="color" value="#ffd86b"></label>
+        <div class="swatch" id="clr-swatch" style="background:#ffd86b" aria-label="Selected color"></div>
+        <span class="pill">Complement <b id="clr-comp">#2b49ff</b></span>
+        <span class="pill">Hue <b id="clr-hue">48°</b></span>
       </div>
     </section>
 
-    <!-- Single Tone -->
-    <section class="card" id="tone">
-      <div class="titleline"><h3>Single Tone</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="row">
-        <div class="controls">
-          <label>Frequency (Hz) <input id="st-f" type="number" min="20" max="2000" step="0.1" value="136.1"></label>
-          <input id="st-f-range" type="range" min="20" max="2000" step="0.1" value="136.1" aria-label="Frequency slider">
-          <label>Volume <input id="st-v" type="range" min="0" max="100" value="22"></label>
-          <label>Wave
-            <select id="st-wave" aria-label="Waveform">
-              <option>sine</option><option>triangle</option><option>sawtooth</option><option>square</option>
-            </select>
-          </label>
-          <div class="meter" aria-hidden="true"><i id="st-viz"></i></div>
-          <button type="button" id="st-start">Start Tone</button>
-          <button type="button" id="st-stop">Stop Tone</button>
-        </div>
-        <div class="note">Tip: 128–150 Hz can feel chest‑centered; ~220 Hz often feels “voice‑like”.</div>
+    <!-- Mic Glow -->
+    <section class="card" id="mic">
+      <div class="titleline"><h3>Mic Glow · Hold a steady hum</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="controls">
+        <label>Mic <select id="mic-state"><option>Off</option><option>On</option></select></label>
+        <span class="pill">Steadiness: <b id="mic-steady">0%</b></span>
+        <span class="pill">Level: <b id="mic-level">–∞ dB</b></span>
       </div>
+      <p class="note">If the percentage climbs and the card glows, your hum is steady. <b>No data saved.</b></p>
     </section>
 
-    <!-- Binaural -->
-    <section class="card" id="binaural">
-      <div class="titleline"><h3>Binaural</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="row">
-        <div class="controls">
-          <label>Base (Hz) <input id="bi-base" type="number" min="60" max="1000" step="0.1" value="220"></label>
-          <label>Beat (Hz) <input id="bi-beat" type="number" min="1" max="20" step="0.1" value="8"></label>
-          <label>Volume <input id="bi-v" type="range" min="0" max="100" value="18"></label>
-          <div class="meter" aria-hidden="true"><i id="bi-viz"></i></div>
-          <button type="button" id="bi-start">Start Binaural</button>
-          <button type="button" id="bi-stop">Stop Binaural</button>
-        </div>
-        <div class="note"><b>Headphones only.</b> Left plays base; right plays base+beat to create the perceived rhythm.</div>
+    <!-- Breath -->
+    <section class="card" id="breath">
+      <div class="titleline"><h3>Breath · One-minute reset</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="controls">
+        <button type="button" id="br-start">Start</button>
+        <button type="button" id="br-stop">Stop</button>
+        <span class="pill">Pattern: <b id="br-pattern">4 • 4 • 4</b></span>
+        <label>In (s) <input id="br-in" type="number" min="1" max="20" value="4"></label>
+        <label>Hold (s) <input id="br-hold" type="number" min="0" max="20" value="4"></label>
+        <label>Out (s) <input id="br-out" type="number" min="1" max="30" value="4"></label>
       </div>
+      <p class="note">Open the page, feel alignment, then close it. That’s the “log.”</p>
     </section>
 
-    <!-- Calming Sequence -->
-    <section class="card" id="sequence">
-      <div class="titleline"><h3>Calming Sequence</h3><div class="huebar" aria-hidden="true"></div></div>
-      <div class="row">
-        <div class="controls">
-          <label>Phase 1 — Hz <input id="cs-f1" type="number" min="20" max="2000" step="0.1" value="150"></label>
-          <label>sec <input id="cs-t1" type="number" min="1" max="600" step="1" value="20"></label>
-          <label>Phase 2 — Hz <input id="cs-f2" type="number" min="20" max="2000" step="0.1" value="180"></label>
-          <label>sec <input id="cs-t2" type="number" min="1" max="600" step="1" value="20"></label>
-          <label>Phase 3 — Hz <input id="cs-f3" type="number" min="20" max="2000" step="0.1" value="136.1"></label>
-          <label>sec <input id="cs-t3" type="number" min="1" max="600" step="1" value="40"></label>
-          <span class="pill state" id="cs-state">IDLE</span>
-          <button type="button" id="cs-start">Start Sequence</button>
-          <button type="button" id="cs-stop">Stop Sequence</button>
-        </div>
-        <div class="note">Format: three <em>frequency • seconds</em> phases. Adjust to taste. This is for relaxation/focus only.</div>
-      </div>
-    </section>
-
-    <!-- Notes & FAQs -->
+    <!-- FAQs -->
     <section class="card faq" id="faqs">
       <div class="titleline"><h3>Notes · FAQs</h3><div class="huebar" aria-hidden="true"></div></div>
-      <details><summary>Do I need headphones?</summary><p>Recommended for binaural; optional for single tones.</p></details>
-      <details><summary>Safe volume?</summary><p>Keep it moderate; if you feel dizzy, anxious, or uncomfortable, stop and rest in silence.</p></details>
-      <details><summary>Good starting frequencies?</summary><p>128–150 Hz often feels chest‑centered; ~220 Hz feels voice‑like. Follow comfort, not rules.</p></details>
-      <details><summary>Data & privacy</summary><p>Everything runs locally in your browser. Nothing is uploaded.</p></details>
+      <details><summary>What does Mic Glow measure?</summary><p>Only steadiness and level to help your hum; nothing is saved or uploaded.</p></details>
+      <details><summary>Why the complement color?</summary><p>It gives your eye a gentle polarity to explore alongside the tone.</p></details>
+      <details><summary>Is this a medical tool?</summary><p>No — it’s a reflective practice. If anything feels uncomfortable, reduce volume or stop and rest in silence.</p></details>
     </section>
 
-    <footer class="note">Be kind to your ears. If in doubt, lower the volume and rest.</footer>
+    <footer class="note">Be kind to your ears. Headphones recommended. If in doubt, lower the volume and rest.</footer>
   </div>
 
   <script>
-  // ---------- Audio Graph ----------
-  let ctx, master, comp;
-  function ensureCtx(){
-    if(!ctx){
-      ctx = new (window.AudioContext||window.webkitAudioContext)({latencyHint:"interactive"});
-      master = ctx.createGain(); master.gain.value = 0.85;
-      comp   = ctx.createDynamicsCompressor();
-      comp.threshold.value=-18; comp.knee.value=12; comp.ratio.value=2; comp.attack.value=.01; comp.release.value=.3;
-      master.connect(comp); comp.connect(ctx.destination);
-      document.addEventListener('click', ()=>ctx.resume(), {once:true});
-    }
-  }
+  // ---------- Audio ----------
+  let ctx, master, comp, sndOsc=null, sndGain=null;
+  function ensureCtx(){ if(!ctx){ ctx=new (window.AudioContext||window.webkitAudioContext)({latencyHint:"interactive"}); master=ctx.createGain(); master.gain.value=.85; comp=ctx.createDynamicsCompressor(); comp.threshold.value=-18; comp.knee.value=12; comp.ratio.value=2; comp.attack.value=.01; comp.release.value=.3; master.connect(comp); comp.connect(ctx.destination); document.addEventListener('click', ()=>ctx.resume(), {once:true}); } }
   function ramp(param, val, t=.15){ const now=ctx.currentTime; param.cancelScheduledValues(now); param.setValueAtTime(param.value, now); param.linearRampToValueAtTime(val, now+t); }
 
-  // ---------- Breath Pacer ----------
-  const bpIn  = document.getElementById('bp-in');
-  const bpOut = document.getElementById('bp-out');
-  const bpState = document.getElementById('bp-state');
-  let bpTid=0, bpOn=false;
-  function bpFlash(){ bpState.style.boxShadow='0 0 0 8px rgba(164,255,101,.25)'; setTimeout(()=>bpState.style.boxShadow='none',160); }
-  function bpClickTone(){ if(!ctx) return; const o=ctx.createOscillator(), g=ctx.createGain(); o.type='sine'; o.frequency.value=880; g.gain.value=0; o.connect(g); g.connect(master); const now=ctx.currentTime; g.gain.linearRampToValueAtTime(0.02, now+.01); g.gain.linearRampToValueAtTime(0.0, now+.12); o.start(now); o.stop(now+.14); }
-  function runPacer(){
-    if(!bpOn) return;
-    bpState.textContent='IN';  bpFlash(); bpClickTone();
-    let t1 = (parseInt(bpIn.value,10)||4)*1000;
-    clearTimeout(bpTid); bpTid=setTimeout(()=>{
-      if(!bpOn) return;
-      bpState.textContent='OUT'; bpFlash(); bpClickTone();
-      let t2 = (parseInt(bpOut.value,10)||6)*1000;
-      bpTid=setTimeout(()=>runPacer(), t2);
-    }, t1);
-  }
-  document.getElementById('bp-start').onclick = ()=>{ ensureCtx(); ctx.resume(); bpOn=true; bpState.textContent='IN'; runPacer(); };
-  document.getElementById('bp-stop').onclick  = ()=>{ bpOn=false; bpState.textContent='IDLE'; clearTimeout(bpTid); };
-
-  // ---------- Single Tone ----------
-  const stF = document.getElementById('st-f'), stR = document.getElementById('st-f-range'), stV = document.getElementById('st-v'), stWave = document.getElementById('st-wave');
-  const stViz = document.getElementById('st-viz');
-  let stOsc=null, stGain=null, stRAF=0;
-  function stMeter(){ if(!stGain){ stViz.style.width='0%'; return; } const v=stGain.gain.value; stViz.style.width=Math.min(100, Math.max(0, v*400))+'%'; stRAF=requestAnimationFrame(stMeter); }
-  function stSync(val){ stF.value=val; stR.value=val; if(stOsc) ramp(stOsc.frequency, Math.max(20,Math.min(20000, Number(val)||136.1)), .12); }
-  stF.oninput = e=>stSync(e.target.value); stR.oninput = e=>stSync(e.target.value);
-  stV.oninput = e=>{ if(stGain) ramp(stGain.gain, (Number(e.target.value)||0)/100*0.30, .05); };
-  stWave.onchange = ()=>{ if(stOsc){ const t=stOsc; try{ t.type=stWave.value; }catch(_){ } } };
-
-  document.getElementById('st-start').onclick = ()=>{
-    ensureCtx(); if(stOsc) return;
-    stOsc = ctx.createOscillator(); stGain = ctx.createGain();
-    stOsc.type = stWave.value; stOsc.frequency.value = Number(stF.value)||136.1;
-    stGain.gain.value = 0.0; stOsc.connect(stGain); stGain.connect(master);
-    stOsc.start(); ramp(stGain.gain, (Number(stV.value)||0)/100*0.30, .18);
-    stMeter();
-  };
-  document.getElementById('st-stop').onclick = ()=>{
-    if(!stOsc||!stGain) return;
-    ramp(stGain.gain,0.0005,.15); setTimeout(()=>{ try{stOsc.stop()}catch(_){ } stOsc.disconnect(); stGain.disconnect(); stOsc=null; stGain=null; cancelAnimationFrame(stRAF); }, 180);
+  // Sound controls
+  const sndState=document.getElementById('snd-state'), sndHz=document.getElementById('snd-hz'), sndHzR=document.getElementById('snd-hz-range'), sndSoft=document.getElementById('snd-soft'), sndGlide=document.getElementById('snd-glide'), sndVol=document.getElementById('snd-vol');
+  function sndSync(v){ sndHz.value=v; sndHzR.value=v; if(sndOsc && sndGlide.checked) ramp(sndOsc.frequency, Number(v)||220, .12); else if(sndOsc) sndOsc.frequency.value=Number(v)||220; }
+  sndHz.oninput=e=>sndSync(e.target.value); sndHzR.oninput=e=>sndSync(e.target.value);
+  sndVol.oninput=e=>{ if(sndGain){ const g=(Number(e.target.value)||0)/100*0.30; if(sndSoft.checked) ramp(sndGain.gain,g,.06); else sndGain.gain.value=g; } };
+  sndState.onchange=()=>{
+    if(sndState.value==='On'){ ensureCtx(); if(sndOsc) return; sndOsc=ctx.createOscillator(); sndGain=ctx.createGain(); sndOsc.type='sine'; sndOsc.frequency.value=Number(sndHz.value)||220; sndGain.gain.value=0; sndOsc.connect(sndGain); sndGain.connect(master); sndOsc.start(); const g=(Number(sndVol.value)||0)/100*0.30; sndSoft.checked? ramp(sndGain.gain,g,.18): sndGain.gain.value=g; }
+    else { if(!sndOsc) return; sndSoft.checked? ramp(sndGain.gain,0.0005,.18):sndGain.gain.value=0.0005; setTimeout(()=>{ try{sndOsc.stop()}catch(_){ } sndOsc.disconnect(); sndGain.disconnect(); sndOsc=null; sndGain=null; }, 200); }
   };
 
-  // ---------- Binaural ----------
-  const biBase=document.getElementById('bi-base'), biBeat=document.getElementById('bi-beat'), biV=document.getElementById('bi-v'); const biViz=document.getElementById('bi-viz');
-  let biL=null, biR=null, biGL=null, biGR=null, merger=null, biRAF=0;
-  function biMeter(){ if(!biGL){ biViz.style.width='0%'; return; } biViz.style.width=(biGL.gain.value*400)+'%'; biRAF=requestAnimationFrame(biMeter); }
-  function startBinaural(){
-    ensureCtx(); if(biL) return;
-    biL = ctx.createOscillator(); biR = ctx.createOscillator();
-    biGL = ctx.createGain(); biGR = ctx.createGain(); merger = ctx.createChannelMerger(2);
-    const base = Number(biBase.value)||220, beat=Number(biBeat.value)||8;
-    biL.type='sine'; biR.type='sine'; biL.frequency.value=base; biR.frequency.value=base+beat;
-    biGL.gain.value=0; biGR.gain.value=0;
-    biL.connect(biGL); biR.connect(biGR);
-    biGL.connect(merger,0,0); biGR.connect(merger,0,1); merger.connect(master);
-    biL.start(); biR.start();
-    ramp(biGL.gain,(Number(biV.value)||0)/100*0.30,.18); ramp(biGR.gain,(Number(biV.value)||0)/100*0.30,.18);
-    biMeter();
+  // ---------- Color ----------
+  const clr=document.getElementById('clr'), compTxt=document.getElementById('clr-comp'), hueTxt=document.getElementById('clr-hue'), sw=document.getElementById('clr-swatch');
+  function hexToHSL(hex){ hex=hex.replace('#',''); if(hex.length===3){ hex=hex.split('').map(s=>s+s).join(''); } const r=parseInt(hex.substr(0,2),16)/255, g=parseInt(hex.substr(2,2),16)/255, b=parseInt(hex.substr(4,2),16)/255; const max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2; if(max===min){ h=s=0; } else { const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min); switch(max){ case r:h=(g-b)/d+(g<b?6:0);break; case g:h=(b-r)/d+2;break; case b:h=(r-g)/d+4;break; } h/=6; } return {h:Math.round(h*360), s, l}; }
+  function hslToHex(h,s,l){ h/=360; let r,g,b; if(s===0){ r=g=b=l; } else { const hue2rgb=(p,q,t)=>{ if(t<0) t+=1; if(t>1) t-=1; if(t<1/6) return p+(q-p)*6*t; if(t<1/2) return q; if(t<2/3) return p+(q-p)*(2/3 - t)*6; return p; }; const q=l<.5? l*(1+s): l+s-l*s; const p=2*l-q; r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3); } const toHex=v=>('0'+Math.round(v*255).toString(16)).slice(-2); return '#'+toHex(r)+toHex(g)+toHex(b); }
+  function updateColor(){
+    const hsl=hexToHSL(clr.value); hueTxt.textContent=hsl.h+'°'; sw.style.background=clr.value;
+    let comp=(hsl.h+180)%360; const compHex=hslToHex(comp, hsl.s, hsl.l); compTxt.textContent=compHex;
   }
-  function stopBinaural(){
-    if(!biL) return;
-    ramp(biGL.gain,0.0005,.15); ramp(biGR.gain,0.0005,.15);
-    setTimeout(()=>{ try{biL.stop();biR.stop();}catch(_){ }
-      biL.disconnect(); biR.disconnect(); biGL.disconnect(); biGR.disconnect(); merger.disconnect();
-      biL=biR=biGL=biGR=merger=null; cancelAnimationFrame(biRAF);
-    }, 180);
-  }
-  document.getElementById('bi-start').onclick=startBinaural; document.getElementById('bi-stop').onclick=stopBinaural;
-  biBase.oninput=()=>{ if(biL) ramp(biL.frequency, Math.max(20,Number(biBase.value)||220), .12); if(biR) ramp(biR.frequency, Math.max(21,(Number(biBase.value)||220)+(Number(biBeat.value)||8)), .12); };
-  biBeat.oninput=()=>{ if(biR) ramp(biR.frequency, Math.max(21,(Number(biBase.value)||220)+(Number(biBeat.value)||8)), .12); };
-  biV.oninput=()=>{ if(biGL) ramp(biGL.gain,(Number(biV.value)||0)/100*0.30,.05); if(biGR) ramp(biGR.gain,(Number(biV.value)||0)/100*0.30,.05); };
+  clr.oninput=updateColor; updateColor();
 
-  // ---------- Calming Sequence ----------
-  const cs = {
-    f:[document.getElementById('cs-f1'),document.getElementById('cs-f2'),document.getElementById('cs-f3')],
-    t:[document.getElementById('cs-t1'),document.getElementById('cs-t2'),document.getElementById('cs-t3')],
-    state:document.getElementById('cs-state')
-  };
-  let csOsc=null, csGain=null, csIdx=-1, csStop=false;
-  function csStep(){
-    if(csStop) return;
-    csIdx++; if(csIdx>2){ csStopSeq(); return; }
-    const hz = Number(cs.f[csIdx].value)||150, sec=Math.max(1,Number(cs.t[csIdx].value)||20);
-    cs.state.textContent = 'PHASE '+(csIdx+1);
-    if(!csOsc){
-      ensureCtx(); csOsc=ctx.createOscillator(); csGain=ctx.createGain();
-      csOsc.type='sine'; csOsc.frequency.value=hz; csGain.gain.value=0; csOsc.connect(csGain); csGain.connect(master); csOsc.start();
-      ramp(csGain.gain,0.18,.18);
-    }else{
-      ramp(csOsc.frequency, hz, .20);
-    }
-    setTimeout(csStep, sec*1000);
+  // ---------- Mic Glow ----------
+  const micState=document.getElementById('mic-state'), micSteady=document.getElementById('mic-steady'), micLevel=document.getElementById('mic-level');
+  const micCard=document.getElementById('mic');
+  let media=null, micSrc=null, analyser=null, raf=0; const buf=new Uint8Array(512); const smooth=(n, p=.2)=>n*p+smooth.last*(1-p); smooth.last=0;
+  function dbFrom(v){ return v<=1e-8 ? -96 : (20*Math.log10(v)); }
+  function sampleMic(){
+    analyser.getByteTimeDomainData(buf);
+    // RMS level
+    let sum=0; for(let i=0;i<buf.length;i++){ const x=(buf[i]-128)/128; sum+=x*x; }
+    const rms=Math.sqrt(sum/buf.length); const db=Math.max(-60, Math.min(0, dbFrom(rms)));
+    smooth.last = smooth(db);
+    // steadiness: 100 when db variance across window is low
+    const mean=rms; let varsum=0; for(let i=0;i<buf.length;i++){ const x=(buf[i]-128)/128; varsum += Math.pow(Math.abs(x)-mean,2); }
+    const variance = varsum/buf.length;
+    const steady = Math.max(0, Math.min(100, Math.round(100*(1 - variance*12))));
+    micSteady.textContent = steady + '%';
+    micLevel.textContent  = (db|0) + ' dB';
+    // glow
+    const glow = steady/100;
+    micCard.style.boxShadow = `0 10px 30px rgba(164,255,101,${0.15+glow*0.25})`;
+    micCard.classList.add('glow');
+    raf = requestAnimationFrame(sampleMic);
   }
-  function csStart(){ csStop=false; csIdx=-1; csStep(); }
-  function csStopSeq(){
-    csStop=true; cs.state.textContent='IDLE';
-    if(!csOsc) return;
-    ramp(csGain.gain,0.0005,.18); setTimeout(()=>{ try{csOsc.stop()}catch(_){ } csOsc.disconnect(); csGain.disconnect(); csOsc=null; csGain=null; }, 220);
+  async function micOn(){
+    ensureCtx();
+    if(media) return;
+    try{
+      media = await navigator.mediaDevices.getUserMedia({audio:true, video:false});
+      const micCtx = ctx.createMediaStreamSource(media);
+      analyser = ctx.createAnalyser(); analyser.fftSize = 1024;
+      micCtx.connect(analyser); micSrc = micCtx;
+      sampleMic();
+    }catch(e){ micState.value='Off'; alert('Mic permission denied.'); }
   }
-  document.getElementById('cs-start').onclick=csStart; document.getElementById('cs-stop').onclick=csStopSeq;
+  function micOff(){
+    cancelAnimationFrame(raf); raf=0; if(media){ media.getTracks().forEach(t=>t.stop()); media=null; } if(micSrc){ micSrc.disconnect(); micSrc=null; } if(analyser){ analyser.disconnect(); analyser=null; }
+    micCard.style.boxShadow='none'; micSteady.textContent='0%'; micLevel.textContent='–∞ dB';
+  }
+  micState.onchange=()=>{ micState.value==='On' ? micOn() : micOff(); };
+
+  // ---------- Breath 1‑minute ----------
+  const brStart=document.getElementById('br-start'), brStop=document.getElementById('br-stop'), brIn=document.getElementById('br-in'), brHold=document.getElementById('br-hold'), brOut=document.getElementById('br-out'), brPattern=document.getElementById('br-pattern');
+  let brTid=0, brOn=false, brPhase=0;
+  function setPattern(){ brPattern.textContent = (parseInt(brIn.value,10)||4)+' • '+(parseInt(brHold.value,10)||4)+' • '+(parseInt(brOut.value,10)||4); }
+  setPattern(); brIn.oninput=setPattern; brHold.oninput=setPattern; brOut.oninput=setPattern;
+  function stepBreath(){
+    if(!brOn) return;
+    const phases=['IN','HOLD','OUT']; const dur=[(parseInt(brIn.value,10)||4),(parseInt(brHold.value,10)||4),(parseInt(brOut.value,10)||4)];
+    const label=phases[brPhase%3]; const secs=dur[brPhase%3];
+    brPhase++; brStart.textContent = label; brStart.classList.add('big'); brStart.style.letterSpacing='.12em';
+    brTid=setTimeout(stepBreath, Math.max(1,secs)*1000);
+  }
+  brStart.onclick=()=>{ brOn=true; brPhase=0; stepBreath(); };
+  brStop.onclick =()=>{ brOn=false; clearTimeout(brTid); brStart.textContent='Start'; brStart.classList.remove('big'); };
   </script>
 </body>
 </html>
