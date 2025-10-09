@@ -1,397 +1,271 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Resonance Mode — Sound · Color · Breath</title>
-<meta name="description" content="Non-writing progress: tune a tone, set a color, feel a steady breath. Optional mic glow when your hum is steady.">
-<style>
-  :root{
-    --bg:#0b0b10; --fg:#f3f5f7; --muted:#a9b0b7; --accent:#ffd86b; --card:#14161c; --ring:#2a2f3a;
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
-  body{
-    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif;
-    color:var(--fg); background: radial-gradient(120vmax 120vmax at 50% -20%, #22283a 0%, #0b0b10 60%);
-  }
-  .wrap{max-width:840px;margin:0 auto;padding:20px 14px 80px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-  h1{font-size:18px;margin:0;letter-spacing:.3px;font-weight:650}
-  .pill{font-size:12px;background:rgba(255,255,255,.06);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08)}
-  .grid{display:grid;gap:16px}
-  @media (min-width:760px){ .grid{grid-template-columns:1fr 1fr} }
-  section.card{
-    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-    border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; position:relative; overflow:hidden;
-  }
-  section.card h2{margin:0 0 10px 0; font-size:15px; letter-spacing:.2px}
-  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .ctrl{display:flex;align-items:center;gap:10px}
-  input[type="range"]{width:100%}
-  .btn{
-    appearance:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--fg);
-    padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:transform .07s ease;
-  }
-  .btn:active{transform:scale(.98)}
-  .btn.primary{border-color:rgba(255,216,107,.55);background:linear-gradient(180deg, rgba(255,216,107,.25), rgba(255,216,107,.12))}
-  .val{font-variant-numeric:tabular-nums;font-weight:650}
-  .toneDot{
-    width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.45);
-    background:conic-gradient(from 0deg, #fff, #fff);
-  }
-  .canvasWrap{position:relative;display:grid;place-items:center}
-  canvas{touch-action:none;background:radial-gradient(100% 100% at 50% 50%, #0d0f16 0%, #0b0b10 80%);border-radius:12px;border:1px solid rgba(255,255,255,.08)}
-  .chips{display:flex;gap:10px;flex-wrap:wrap}
-  .chip{
-    padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);font-size:12px
-  }
-  .swatch{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.5);display:inline-block;vertical-align:-4px;margin-right:6px}
-  .meter{
-    height:12px;width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden
-  }
-  .meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg, #9be7ff, #ffd86b);transition:width .18s ease}
-  .breath{
-    display:grid;place-items:center;height:220px;border-radius:12px;border:1px solid rgba(255,255,255,.08);
-    background:radial-gradient(90% 90% at 50% 50%, rgba(255,255,255,.05), rgba(255,255,255,.02));
-    position:relative; overflow:hidden;
-  }
-  .orb{
-    width:90px;height:90px;border-radius:50%;
-    background:radial-gradient(80% 80% at 35% 30%, rgba(255,255,255,.85), rgba(255,255,255,.18));
-    box-shadow:0 0 40px 0 rgba(255,216,107,.18), inset 0 0 20px rgba(255,255,255,.2);
-    transition:transform 2.2s ease-in-out, filter .3s ease;
-  }
-  .orb.inhale{transform:scale(1.17)}
-  .orb.exhale{transform:scale(0.93)}
-  .glow{position:absolute;inset:0;border-radius:12px;pointer-events:none;opacity:.0;transition:opacity .3s ease, box-shadow .3s ease}
-  .glow.on{opacity:.8; box-shadow:0 0 80px 10px rgba(255,216,107,.25) inset, 0 0 90px 10px rgba(155,231,255,.22) inset}
-  footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0d11">
+  <title>Sine — Calm & Breath</title>
+  <meta name="description" content="Gentle tones for relaxation, focus, and breath pacing. Headphones recommended for binaural mode." />
+  <style>
+    :root{
+      color-scheme: dark;
+      --bg:#0b0d11; --panel:#11161f; --edge:#1d2430; --ink:#e7edf7; --muted:#a8b3c7; --glow:#66e1ff;
+      --green:#a4ff65; --blue:#86c9ff; --violet:#b38bff;
+    }
+    *{box-sizing:border-box} html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif, system-ui, -apple-system, "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial}
+    .wrap{max-width:980px;margin:0 auto;padding:28px 16px 80px}
+    header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
+    h1{margin:0;font-size:1.5rem;letter-spacing:.2px}
+    .tag{color:var(--muted);font-size:.96rem}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.07)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px}
+    .titleline{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .titleline h3{margin:0;font-size:1.05rem}
+    .huebar{height:6px;border-radius:999px;background:linear-gradient(90deg,#2bc2ff,#a4ff65);opacity:.7}
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    label{font-size:.92rem;color:var(--muted);display:inline-flex;gap:8px;align-items:center}
+    input[type=range]{width:220px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    button{appearance:none;border:1px solid var(--edge);border-radius:12px;background:#121826;color:var(--ink);padding:9px 12px;cursor:pointer}
+    button:hover{border-color:#2b3545;box-shadow:0 0 0 2px rgba(102,225,255,.12)}
+    .pill{border:1px solid var(--edge);border-radius:999px;padding:6px 10px;font-size:.86rem;color:var(--muted)}
+    .note{font-size:.92rem;color:var(--muted)}
+    .meter{height:10px;border-radius:999px;background:#0e1320;border:1px solid var(--edge);overflow:hidden;min-width:180px}
+    .meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg, #2bc2ff, #a4ff65)}
+    .big{font-weight:800;letter-spacing:.08em}
+    .state{font-variant-caps:all-small-caps;letter-spacing:.14em;opacity:.95}
+    .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    hr{border:none;height:1px;background:linear-gradient(90deg,transparent,#232b36,transparent);margin:12px 0}
+    .faq details{border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(255,255,255,.03)}
+    .faq details+details{margin-top:8px}
+    .faq summary{cursor:pointer;font-weight:700}
+    :focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+    @media (prefers-reduced-motion:reduce){ .pulse{animation:none} }
+  </style>
+
+  <!-- JSON-LD: small FAQ for rich results -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Do I need headphones?","acceptedAnswer":{"@type":"Answer","text":"Recommended for binaural mode; optional for single tones."}},
+    {"@type":"Question","name":"Is there a safe volume?","acceptedAnswer":{"@type":"Answer","text":"Keep volume moderate; if you feel dizzy, anxious, or uncomfortable, stop and rest in silence."}},
+    {"@type":"Question","name":"What frequencies feel good to start with?","acceptedAnswer":{"@type":"Answer","text":"Many people like 128–150 Hz for chest-centered warmth and ~220 Hz for a voice-like feel. Follow comfort, not rules."}}
+  ]}
+  </script>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Resonance Mode</h1>
-    <div class="pill">No writing • Feel the shift</div>
-  </header>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Sine — Calm &amp; Breath</h1>
+        <div class="tag">Gentle tones for relaxation, focus, and breath pacing. <b>Headphones</b> recommended for binaural.</div>
+      </div>
+      <div class="flex">
+        <a class="pill" href="/resonance.html" rel="noopener">Resonance Mode →</a>
+        <a class="pill" href="#faqs">Notes · FAQs</a>
+      </div>
+    </header>
 
-  <div class="grid">
-    <!-- SOUND -->
-    <section class="card" id="soundCard">
-      <h2>Sound · Tune your field</h2>
-      <div class="row" style="gap:14px">
-        <button class="btn primary" id="toneBtn">Tone: Off</button>
-        <div class="val"><span id="hzVal">220</span> Hz</div>
-        <div class="toneDot" id="toneDot"></div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <input id="hz" type="range" min="40" max="1200" step="1" value="220" aria-label="Frequency (Hz)">
-      </div>
-      <div class="row" style="margin-top:10px">
-        <label class="chip"><input id="soft" type="checkbox" checked> Soft start</label>
-        <label class="chip"><input id="smooth" type="checkbox" checked> Smooth glide</label>
-        <div class="chip">Touch slider · hum to match</div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <div class="meter" aria-label="Output level"><i id="level"></i></div>
+    <!-- Breath Pacer -->
+    <section class="card" id="pacer">
+      <div class="titleline"><h3>Breath Pacer</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="row">
+        <div class="controls">
+          <label>Inhale (s) <input id="bp-in" type="number" min="1" max="20" step="1" value="4"></label>
+          <label>Exhale (s) <input id="bp-out" type="number" min="1" max="30" step="1" value="6"></label>
+          <span class="pill state" id="bp-state">IDLE</span>
+          <button type="button" id="bp-start">Start Pacer</button>
+          <button type="button" id="bp-stop">Stop Pacer</button>
+        </div>
+        <div class="note">A subtle cue flashes on each phase change; optional click tone is ultra‑low volume.</div>
       </div>
     </section>
 
-    <!-- COLOR -->
-    <section class="card" id="colorCard">
-      <h2>Color · Pick & see the complement</h2>
-      <div class="canvasWrap" style="margin-bottom:10px">
-        <canvas id="wheel" width="360" height="360" aria-label="Color wheel"></canvas>
-      </div>
-      <div class="chips">
-        <div class="chip"><span class="swatch" id="swatch"></span><span id="hex">#ffd86b</span></div>
-        <div class="chip">Complement: <span class="swatch" id="swatchC"></span><span id="hexC">#2b49ff</span></div>
-        <div class="chip" id="labelHue">Hue 48°</div>
+    <!-- Single Tone -->
+    <section class="card" id="tone">
+      <div class="titleline"><h3>Single Tone</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="row">
+        <div class="controls">
+          <label>Frequency (Hz) <input id="st-f" type="number" min="20" max="2000" step="0.1" value="136.1"></label>
+          <input id="st-f-range" type="range" min="20" max="2000" step="0.1" value="136.1" aria-label="Frequency slider">
+          <label>Volume <input id="st-v" type="range" min="0" max="100" value="22"></label>
+          <label>Wave
+            <select id="st-wave" aria-label="Waveform">
+              <option>sine</option><option>triangle</option><option>sawtooth</option><option>square</option>
+            </select>
+          </label>
+          <div class="meter" aria-hidden="true"><i id="st-viz"></i></div>
+          <button type="button" id="st-start">Start Tone</button>
+          <button type="button" id="st-stop">Stop Tone</button>
+        </div>
+        <div class="note">Tip: 128–150 Hz can feel chest‑centered; ~220 Hz often feels “voice‑like”.</div>
       </div>
     </section>
 
-    <!-- MIC STEADINESS -->
-    <section class="card" id="micCard">
-      <h2>Mic Glow · Hold a steady hum</h2>
-      <div class="row" style="gap:12px">
-        <button class="btn" id="micBtn">Mic: Off</button>
-        <div class="chip">Steadiness: <span class="val" id="steady">0%</span></div>
-        <div class="chip">Level: <span class="val" id="micDb">–∞ dB</span></div>
+    <!-- Binaural -->
+    <section class="card" id="binaural">
+      <div class="titleline"><h3>Binaural</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="row">
+        <div class="controls">
+          <label>Base (Hz) <input id="bi-base" type="number" min="60" max="1000" step="0.1" value="220"></label>
+          <label>Beat (Hz) <input id="bi-beat" type="number" min="1" max="20" step="0.1" value="8"></label>
+          <label>Volume <input id="bi-v" type="range" min="0" max="100" value="18"></label>
+          <div class="meter" aria-hidden="true"><i id="bi-viz"></i></div>
+          <button type="button" id="bi-start">Start Binaural</button>
+          <button type="button" id="bi-stop">Stop Binaural</button>
+        </div>
+        <div class="note"><b>Headphones only.</b> Left plays base; right plays base+beat to create the perceived rhythm.</div>
       </div>
-      <div class="breath" style="margin-top:12px">
-        <div class="glow" id="micGlow"></div>
-        <div class="orb" id="orb"></div>
-      </div>
-      <p style="margin:10px 0 0;color:var(--muted);font-size:12px">If the percentage climbs and the card glows, your hum is steady. No data saved.</p>
     </section>
 
-    <!-- BREATH -->
-    <section class="card" id="breathCard">
-      <h2>Breath · One-minute reset</h2>
-      <div class="row" style="gap:10px">
-        <button class="btn" id="bStart">Start</button>
-        <button class="btn" id="bStop">Stop</button>
-        <div class="chip">Pattern: <span class="val" id="bPattern">4 • 4 • 4</span></div>
-      </div>
-      <div class="breath" style="margin-top:12px">
-        <div class="glow" id="bGlow"></div>
-        <div class="orb" id="bOrb"></div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <label class="chip">In <input id="bIn" type="number" min="2" max="10" value="4" style="width:48px">s</label>
-        <label class="chip">Hold <input id="bHold" type="number" min="0" max="10" value="4" style="width:48px">s</label>
-        <label class="chip">Out <input id="bOut" type="number" min="2" max="12" value="4" style="width:48px">s</label>
+    <!-- Calming Sequence -->
+    <section class="card" id="sequence">
+      <div class="titleline"><h3>Calming Sequence</h3><div class="huebar" aria-hidden="true"></div></div>
+      <div class="row">
+        <div class="controls">
+          <label>Phase 1 — Hz <input id="cs-f1" type="number" min="20" max="2000" step="0.1" value="150"></label>
+          <label>sec <input id="cs-t1" type="number" min="1" max="600" step="1" value="20"></label>
+          <label>Phase 2 — Hz <input id="cs-f2" type="number" min="20" max="2000" step="0.1" value="180"></label>
+          <label>sec <input id="cs-t2" type="number" min="1" max="600" step="1" value="20"></label>
+          <label>Phase 3 — Hz <input id="cs-f3" type="number" min="20" max="2000" step="0.1" value="136.1"></label>
+          <label>sec <input id="cs-t3" type="number" min="1" max="600" step="1" value="40"></label>
+          <span class="pill state" id="cs-state">IDLE</span>
+          <button type="button" id="cs-start">Start Sequence</button>
+          <button type="button" id="cs-stop">Stop Sequence</button>
+        </div>
+        <div class="note">Format: three <em>frequency • seconds</em> phases. Adjust to taste. This is for relaxation/focus only.</div>
       </div>
     </section>
+
+    <!-- Notes & FAQs -->
+    <section class="card faq" id="faqs">
+      <div class="titleline"><h3>Notes · FAQs</h3><div class="huebar" aria-hidden="true"></div></div>
+      <details><summary>Do I need headphones?</summary><p>Recommended for binaural; optional for single tones.</p></details>
+      <details><summary>Safe volume?</summary><p>Keep it moderate; if you feel dizzy, anxious, or uncomfortable, stop and rest in silence.</p></details>
+      <details><summary>Good starting frequencies?</summary><p>128–150 Hz often feels chest‑centered; ~220 Hz feels voice‑like. Follow comfort, not rules.</p></details>
+      <details><summary>Data & privacy</summary><p>Everything runs locally in your browser. Nothing is uploaded.</p></details>
+    </section>
+
+    <footer class="note">Be kind to your ears. If in doubt, lower the volume and rest.</footer>
   </div>
 
-  <footer>Open the page, feel alignment, then close it. That’s the “log.”</footer>
-</div>
-
-<script>
-(function(){
-  let ac, osc, gainNode;
-  let running = false;
-
-  function ensureAudio(){
-    if(ac) return;
-    ac = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = ac.createGain();
-    gainNode.gain.value = 0;
-    gainNode.connect(ac.destination);
-    osc = ac.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = +hz.value;
-    osc.connect(gainNode);
-    osc.start();
-  }
-
-  const hz = document.getElementById('hz');
-  const hzVal = document.getElementById('hzVal');
-  const toneBtn = document.getElementById('toneBtn');
-  const levelBar = document.getElementById('level');
-  const soft = document.getElementById('soft');
-  const smooth = document.getElementById('smooth');
-  const toneDot = document.getElementById('toneDot');
-
-  hz.addEventListener('input', ()=>{
-    hzVal.textContent = hz.value;
-    if(osc){
-      if(smooth.checked){
-        const now = ac.currentTime;
-        osc.frequency.cancelScheduledValues(now);
-        osc.frequency.setTargetAtTime(+hz.value, now, 0.06);
-      }else{
-        osc.frequency.value = +hz.value;
-      }
+  <script>
+  // ---------- Audio Graph ----------
+  let ctx, master, comp;
+  function ensureCtx(){
+    if(!ctx){
+      ctx = new (window.AudioContext||window.webkitAudioContext)({latencyHint:"interactive"});
+      master = ctx.createGain(); master.gain.value = 0.85;
+      comp   = ctx.createDynamicsCompressor();
+      comp.threshold.value=-18; comp.knee.value=12; comp.ratio.value=2; comp.attack.value=.01; comp.release.value=.3;
+      master.connect(comp); comp.connect(ctx.destination);
+      document.addEventListener('click', ()=>ctx.resume(), {once:true});
     }
-    toneDot.style.background = `conic-gradient(from 0deg, #fff, #fff ${Math.min(100,(hz.value-40)/(1200-40)*100)}%, rgba(255,255,255,.25) 0)`;
-  });
-
-  function setOutput(on){
-    if(!ac) ensureAudio();
-    const target = on ? 0.18 : 0;
-    const t = soft.checked ? 0.07 : 0.01;
-    const now = ac.currentTime;
-    gainNode.gain.cancelScheduledValues(now);
-    gainNode.gain.setTargetAtTime(target, now, t);
-    running = on;
-    toneBtn.textContent = on ? 'Tone: On' : 'Tone: Off';
   }
+  function ramp(param, val, t=.15){ const now=ctx.currentTime; param.cancelScheduledValues(now); param.setValueAtTime(param.value, now); param.linearRampToValueAtTime(val, now+t); }
 
-  toneBtn.addEventListener('click', async ()=>{
-    ensureAudio();
-    if(ac.state === 'suspended') await ac.resume();
-    setOutput(!running);
-  });
-
-  // Simple output level animation
-  let lvlPh=0;
-  function animLevel(){
-    lvlPh += 0.03 + (running?0.02:0);
-    const synthLevel = running ? (0.4 + 0.4*Math.sin(lvlPh)) : 0;
-    levelBar.style.width = (synthLevel*100).toFixed(0)+'%';
-    requestAnimationFrame(animLevel);
+  // ---------- Breath Pacer ----------
+  const bpIn  = document.getElementById('bp-in');
+  const bpOut = document.getElementById('bp-out');
+  const bpState = document.getElementById('bp-state');
+  let bpTid=0, bpOn=false;
+  function bpFlash(){ bpState.style.boxShadow='0 0 0 8px rgba(164,255,101,.25)'; setTimeout(()=>bpState.style.boxShadow='none',160); }
+  function bpClickTone(){ if(!ctx) return; const o=ctx.createOscillator(), g=ctx.createGain(); o.type='sine'; o.frequency.value=880; g.gain.value=0; o.connect(g); g.connect(master); const now=ctx.currentTime; g.gain.linearRampToValueAtTime(0.02, now+.01); g.gain.linearRampToValueAtTime(0.0, now+.12); o.start(now); o.stop(now+.14); }
+  function runPacer(){
+    if(!bpOn) return;
+    bpState.textContent='IN';  bpFlash(); bpClickTone();
+    let t1 = (parseInt(bpIn.value,10)||4)*1000;
+    clearTimeout(bpTid); bpTid=setTimeout(()=>{
+      if(!bpOn) return;
+      bpState.textContent='OUT'; bpFlash(); bpClickTone();
+      let t2 = (parseInt(bpOut.value,10)||6)*1000;
+      bpTid=setTimeout(()=>runPacer(), t2);
+    }, t1);
   }
-  animLevel();
+  document.getElementById('bp-start').onclick = ()=>{ ensureCtx(); ctx.resume(); bpOn=true; bpState.textContent='IN'; runPacer(); };
+  document.getElementById('bp-stop').onclick  = ()=>{ bpOn=false; bpState.textContent='IDLE'; clearTimeout(bpTid); };
 
-  // COLOR WHEEL
-  const wheel = document.getElementById('wheel');
-  const wctx = wheel.getContext('2d');
-  const sw = document.getElementById('swatch');
-  const swc = document.getElementById('swatchC');
-  const hex = document.getElementById('hex');
-  const hexC = document.getElementById('hexC');
-  const labelHue = document.getElementById('labelHue');
+  // ---------- Single Tone ----------
+  const stF = document.getElementById('st-f'), stR = document.getElementById('st-f-range'), stV = document.getElementById('st-v'), stWave = document.getElementById('st-wave');
+  const stViz = document.getElementById('st-viz');
+  let stOsc=null, stGain=null, stRAF=0;
+  function stMeter(){ if(!stGain){ stViz.style.width='0%'; return; } const v=stGain.gain.value; stViz.style.width=Math.min(100, Math.max(0, v*400))+'%'; stRAF=requestAnimationFrame(stMeter); }
+  function stSync(val){ stF.value=val; stR.value=val; if(stOsc) ramp(stOsc.frequency, Math.max(20,Math.min(20000, Number(val)||136.1)), .12); }
+  stF.oninput = e=>stSync(e.target.value); stR.oninput = e=>stSync(e.target.value);
+  stV.oninput = e=>{ if(stGain) ramp(stGain.gain, (Number(e.target.value)||0)/100*0.30, .05); };
+  stWave.onchange = ()=>{ if(stOsc){ const t=stOsc; try{ t.type=stWave.value; }catch(_){ } } };
 
-  function drawWheel(){
-    const r = wheel.width/2;
-    const cx = r, cy = r;
-    for(let a=0;a<360;a++){
-      const grad = wctx.createRadialGradient(cx,cy,0,cx,cy,r);
-      grad.addColorStop(0, 'hsl('+a+',100%,50%)');
-      grad.addColorStop(1, 'hsl('+a+',100%,50%)');
-      wctx.strokeStyle = grad;
-      wctx.beginPath();
-      wctx.arc(cx,cy,r-1,(a-1)*Math.PI/180,a*Math.PI/180);
-      wctx.stroke();
-    }
-    // inner fade to neutral
-    const g = wctx.createRadialGradient(cx,cy,0,cx,cy,r);
-    g.addColorStop(0,'rgba(11,11,16,0.35)');
-    g.addColorStop(0.7,'rgba(11,11,16,0)');
-    g.addColorStop(1,'rgba(11,11,16,0)');
-    wctx.fillStyle = g; wctx.beginPath(); wctx.arc(cx,cy,r,0,Math.PI*2); wctx.fill();
-  }
-  function hslToRgb(h,s,l){
-    s/=100; l/=100;
-    const k=n=> (n+ h/30)%12;
-    const a = s*Math.min(l,1-l);
-    const f=n=> l - a*Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n),1)));
-    return [Math.round(255*f(0)),Math.round(255*f(8)),Math.round(255*f(4))];
-  }
-  function rgbToHex(r,g,b){
-    return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
-  }
-  function setHue(h){
-    const [r,g,b]=hslToRgb(h,100,50);
-    const [rc,gc,bc]=hslToRgb((h+180)%360,100,50);
-    const h1 = rgbToHex(r,g,b);
-    const h2 = rgbToHex(rc,gc,bc);
-    sw.style.background = h1; swc.style.background = h2;
-    hex.textContent = h1; hexC.textContent = h2;
-    labelHue.textContent = 'Hue '+Math.round(h)+'°';
-    document.body.style.background = `radial-gradient(120vmax 120vmax at 50% -20%, ${h1}22 0%, #0b0b10 60%)`;
-  }
-  drawWheel();
-  setHue(48);
+  document.getElementById('st-start').onclick = ()=>{
+    ensureCtx(); if(stOsc) return;
+    stOsc = ctx.createOscillator(); stGain = ctx.createGain();
+    stOsc.type = stWave.value; stOsc.frequency.value = Number(stF.value)||136.1;
+    stGain.gain.value = 0.0; stOsc.connect(stGain); stGain.connect(master);
+    stOsc.start(); ramp(stGain.gain, (Number(stV.value)||0)/100*0.30, .18);
+    stMeter();
+  };
+  document.getElementById('st-stop').onclick = ()=>{
+    if(!stOsc||!stGain) return;
+    ramp(stGain.gain,0.0005,.15); setTimeout(()=>{ try{stOsc.stop()}catch(_){ } stOsc.disconnect(); stGain.disconnect(); stOsc=null; stGain=null; cancelAnimationFrame(stRAF); }, 180);
+  };
 
-  function pointerHue(ev){
-    const rect = wheel.getBoundingClientRect();
-    const x = (ev.touches? ev.touches[0].clientX:ev.clientX) - rect.left;
-    const y = (ev.touches? ev.touches[0].clientY:ev.clientY) - rect.top;
-    const cx = wheel.width/2, cy = wheel.height/2;
-    const dx = (x*wheel.width/rect.width) - cx;
-    const dy = (y*wheel.height/rect.height) - cy;
-    let ang = Math.atan2(dy,dx)*180/Math.PI;
-    if(ang<0) ang+=360;
-    setHue(ang);
+  // ---------- Binaural ----------
+  const biBase=document.getElementById('bi-base'), biBeat=document.getElementById('bi-beat'), biV=document.getElementById('bi-v'); const biViz=document.getElementById('bi-viz');
+  let biL=null, biR=null, biGL=null, biGR=null, merger=null, biRAF=0;
+  function biMeter(){ if(!biGL){ biViz.style.width='0%'; return; } biViz.style.width=(biGL.gain.value*400)+'%'; biRAF=requestAnimationFrame(biMeter); }
+  function startBinaural(){
+    ensureCtx(); if(biL) return;
+    biL = ctx.createOscillator(); biR = ctx.createOscillator();
+    biGL = ctx.createGain(); biGR = ctx.createGain(); merger = ctx.createChannelMerger(2);
+    const base = Number(biBase.value)||220, beat=Number(biBeat.value)||8;
+    biL.type='sine'; biR.type='sine'; biL.frequency.value=base; biR.frequency.value=base+beat;
+    biGL.gain.value=0; biGR.gain.value=0;
+    biL.connect(biGL); biR.connect(biGR);
+    biGL.connect(merger,0,0); biGR.connect(merger,0,1); merger.connect(master);
+    biL.start(); biR.start();
+    ramp(biGL.gain,(Number(biV.value)||0)/100*0.30,.18); ramp(biGR.gain,(Number(biV.value)||0)/100*0.30,.18);
+    biMeter();
   }
-  wheel.addEventListener('pointerdown', e=>{pointerHue(e); wheel.setPointerCapture(e.pointerId);});
-  wheel.addEventListener('pointermove', e=>{ if(e.buttons===1) pointerHue(e);});
-  wheel.addEventListener('touchstart', e=>{pointerHue(e);},{passive:true});
-  wheel.addEventListener('touchmove', e=>{pointerHue(e);},{passive:true});
+  function stopBinaural(){
+    if(!biL) return;
+    ramp(biGL.gain,0.0005,.15); ramp(biGR.gain,0.0005,.15);
+    setTimeout(()=>{ try{biL.stop();biR.stop();}catch(_){ }
+      biL.disconnect(); biR.disconnect(); biGL.disconnect(); biGR.disconnect(); merger.disconnect();
+      biL=biR=biGL=biGR=merger=null; cancelAnimationFrame(biRAF);
+    }, 180);
+  }
+  document.getElementById('bi-start').onclick=startBinaural; document.getElementById('bi-stop').onclick=stopBinaural;
+  biBase.oninput=()=>{ if(biL) ramp(biL.frequency, Math.max(20,Number(biBase.value)||220), .12); if(biR) ramp(biR.frequency, Math.max(21,(Number(biBase.value)||220)+(Number(biBeat.value)||8)), .12); };
+  biBeat.oninput=()=>{ if(biR) ramp(biR.frequency, Math.max(21,(Number(biBase.value)||220)+(Number(biBeat.value)||8)), .12); };
+  biV.oninput=()=>{ if(biGL) ramp(biGL.gain,(Number(biV.value)||0)/100*0.30,.05); if(biGR) ramp(biGR.gain,(Number(biV.value)||0)/100*0.30,.05); };
 
-  // MIC STEADINESS (optional)
-  const micBtn = document.getElementById('micBtn');
-  const steady = document.getElementById('steady');
-  const micDb = document.getElementById('micDb');
-  const micGlow = document.getElementById('micGlow');
-  let micOn=false, analyser, micSrc, micBuf, lastSpec=null, stableScore=0;
-
-  micBtn.addEventListener('click', async ()=>{
-    if(!micOn){
-      try{
-        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-        if(!ac) ensureAudio(); if(ac.state==='suspended') await ac.resume();
-        analyser = ac.createAnalyser();
-        analyser.fftSize = 1024;
-        analyser.smoothingTimeConstant = 0.6;
-        micSrc = ac.createMediaStreamSource(stream);
-        micSrc.connect(analyser);
-        micBuf = new Uint8Array(analyser.frequencyBinCount);
-        micOn=true; micBtn.textContent='Mic: On';
-        loopMic();
-      }catch(e){
-        micBtn.textContent='Mic: Unavailable';
-      }
+  // ---------- Calming Sequence ----------
+  const cs = {
+    f:[document.getElementById('cs-f1'),document.getElementById('cs-f2'),document.getElementById('cs-f3')],
+    t:[document.getElementById('cs-t1'),document.getElementById('cs-t2'),document.getElementById('cs-t3')],
+    state:document.getElementById('cs-state')
+  };
+  let csOsc=null, csGain=null, csIdx=-1, csStop=false;
+  function csStep(){
+    if(csStop) return;
+    csIdx++; if(csIdx>2){ csStopSeq(); return; }
+    const hz = Number(cs.f[csIdx].value)||150, sec=Math.max(1,Number(cs.t[csIdx].value)||20);
+    cs.state.textContent = 'PHASE '+(csIdx+1);
+    if(!csOsc){
+      ensureCtx(); csOsc=ctx.createOscillator(); csGain=ctx.createGain();
+      csOsc.type='sine'; csOsc.frequency.value=hz; csGain.gain.value=0; csOsc.connect(csGain); csGain.connect(master); csOsc.start();
+      ramp(csGain.gain,0.18,.18);
     }else{
-      micOn=false; micBtn.textContent='Mic: Off'; micGlow.classList.remove('on'); steady.textContent='0%'; micDb.textContent='–∞ dB';
-      analyser = null; micSrc = null; lastSpec=null; stableScore=0;
+      ramp(csOsc.frequency, hz, .20);
     }
-  });
-
-  function loopMic(){
-    if(!micOn || !analyser) return;
-    analyser.getByteFrequencyData(micBuf);
-    // Loudness (rough dB)
-    let sum=0;
-    for(let i=0;i<micBuf.length;i++) sum += micBuf[i]*micBuf[i];
-    const rms = Math.sqrt(sum/micBuf.length)/255;
-    const db = 20*Math.log10(rms||1e-6);
-    micDb.textContent = (db> -60 ? db.toFixed(1): '–∞')+' dB';
-
-    // Steadiness = inverse of spectral change
-    let diff=0;
-    if(lastSpec){
-      for(let i=0;i<micBuf.length;i++){
-        diff += Math.abs(micBuf[i]-lastSpec[i]);
-      }
-      diff/=micBuf.length*255;
-    }
-    lastSpec = micBuf.slice(0);
-    const loud = Math.min(1, Math.max(0, (db+40)/20));      // -40..-20 dB → 0..1
-    const stable = Math.max(0, 1 - diff*4);                 // lower diff → higher stability
-    const score = loud * stable;
-    // Smooth the display
-    stableScore = 0.85*stableScore + 0.15*score;
-    const pct = Math.round(stableScore*100);
-    steady.textContent = pct+'%';
-    if(pct>65){ micGlow.classList.add('on'); } else { micGlow.classList.remove('on'); }
-    requestAnimationFrame(loopMic);
+    setTimeout(csStep, sec*1000);
   }
-
-  // BREATH
-  const bStart = document.getElementById('bStart');
-  const bStop = document.getElementById('bStop');
-  const bIn = document.getElementById('bIn');
-  const bHold = document.getElementById('bHold');
-  const bOut = document.getElementById('bOut');
-  const bPattern = document.getElementById('bPattern');
-  const bOrb = document.getElementById('bOrb');
-  const bGlow = document.getElementById('bGlow');
-  let breathReq=null, breathPhase=0, breathTimer=0, breathState='idle';
-
-  function updatePatternLabel(){
-    bPattern.textContent = `${+bIn.value} • ${+bHold.value} • ${+bOut.value}`;
+  function csStart(){ csStop=false; csIdx=-1; csStep(); }
+  function csStopSeq(){
+    csStop=true; cs.state.textContent='IDLE';
+    if(!csOsc) return;
+    ramp(csGain.gain,0.0005,.18); setTimeout(()=>{ try{csOsc.stop()}catch(_){ } csOsc.disconnect(); csGain.disconnect(); csOsc=null; csGain=null; }, 220);
   }
-  bIn.addEventListener('input',updatePatternLabel);
-  bHold.addEventListener('input',updatePatternLabel);
-  bOut.addEventListener('input',updatePatternLabel);
-  updatePatternLabel();
-
-  function breathLoop(ts){
-    if(!breathTimer) breathTimer = ts;
-    const dt = (ts - breathTimer)/1000;
-    breathTimer = ts;
-    let tIn=+bIn.value, tHold=+bHold.value, tOut=+bOut.value;
-    if(breathState==='idle'){ breathState='inhale'; breathPhase=0; bGlow.classList.remove('on'); }
-
-    breathPhase+=dt;
-    if(breathState==='inhale'){
-      bOrb.classList.add('inhale'); bOrb.classList.remove('exhale');
-      if(breathPhase>=tIn){ breathState = tHold>0 ? 'hold' : 'exhale'; breathPhase=0; }
-    }else if(breathState==='hold'){
-      bOrb.style.filter='saturate(1.15) brightness(1.15)';
-      if(breathPhase>=tHold){ breathState='exhale'; breathPhase=0; bOrb.style.filter=''; }
-    }else if(breathState==='exhale'){
-      bOrb.classList.add('exhale'); bOrb.classList.remove('inhale');
-      if(breathPhase>=tOut){ breathState='inhale'; breathPhase=0; }
-    }
-    breathReq = requestAnimationFrame(breathLoop);
-  }
-  bStart.addEventListener('click',()=>{
-    bGlow.classList.add('on');
-    if(!breathReq) requestAnimationFrame(breathLoop);
-  });
-  bStop.addEventListener('click',()=>{
-    bGlow.classList.remove('on');
-    if(breathReq){ cancelAnimationFrame(breathReq); breathReq=null; }
-    bOrb.classList.remove('inhale','exhale'); bOrb.style.filter='';
-    breathState='idle'; breathPhase=0; breathTimer=0;
-  });
-})();
-</script>
+  document.getElementById('cs-start').onclick=csStart; document.getElementById('cs-stop').onclick=csStopSeq;
+  </script>
 </body>
 </html>
